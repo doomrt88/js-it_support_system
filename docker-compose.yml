@@ -1,0 +1,15 @@
+# Docker compose for IT Support system manager application
+version: "3.7"
+
+services:
+  db:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 28000:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secureadmin
+      MONGO_INITDB_DATABASE: support
+    volumes:
+      - ./db:/data/db
