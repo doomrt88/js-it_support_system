@@ -1,49 +1,41 @@
 import mongoose, { Schema } from "mongoose";
 
-const userSchema = new Schema({
-  userName: {
+const UserSchema = new Schema({
+  user_name: {
     type: String,
-    unique: true,
-    required: [true, "The username is mandatory"],
-  },
-  firstName: {
-    type: String,
-    required: [true, "The first name is mandatory"],
-  },
-  lastName: {
-    type: String,
-    required: [true, "The last name is mandatory"],
-  },
-  email: {
-    type: String,
-    unique: true,
-    required: [true, "The email is mandatory"],
+    required: true
   },
   password: {
     type: String,
-    required: [true, "The password is mandatory"],
+    required: true
   },
-  role: {
+  first_name: {
     type: String,
-    required: [true, "The role is mandatory"],
+    required: true
   },
-  createdAt: {
+  last_name: String,
+  created_by: {
+    type: Number,
+    required: true
+  },
+  created_at: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
-  updatedAt: {
+  updated_by: {
+    type: Number,
+    required: true
+  },
+  updated_at: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
-  updatedBy: {
-    type: String,
-  },
-  createdBy: {
-    type: String,
-    default: "admin",
-  },
+  roles: {
+    type: [String],
+    default: []
+  }
 });
 
-const UserModel = mongoose.model("Users", userSchema);
+const UserModel = mongoose.model("Users", UserSchema);
 
 export default UserModel;

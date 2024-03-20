@@ -41,7 +41,7 @@ code {
     monospace;
 }
 
-input[type='button'] {
+input[type='button'], input[type='submit'] {
   border: none;
   background: cornflowerblue;
   color: white;
