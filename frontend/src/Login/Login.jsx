@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const Login = (props) => {
@@ -9,8 +9,15 @@ const Login = (props) => {
 
   const navigate = useNavigate()
 
-  const onButtonClick = () => {
-    // You'll update this function later...
+  const onButtonClick = async () => {
+    try {
+      const url = "http://localhost:3000/tickets?echo=" + email;
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log("Response: ", data);
+    } catch (error) {
+      console.error("Error loading data: ", error);
+    }
   }
 
   return (
