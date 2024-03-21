@@ -1,0 +1,104 @@
+// run this in mongosh
+
+use support;
+
+// users collection
+db.createCollection("users");
+db.users.createIndex({ "user_name": 1 }, { unique: true });
+db.users.insertMany([
+    {
+        user_name: "admin",
+        password: "$2a$10$FoLNOa.X9AJ.Luh3mvpY2.3wGXOXSKZ6cvHn950WIxiWPBrg8LBe6",
+        first_name: "Admin",
+        last_name: "User",
+        created_by: 1,
+        created_at: new Date(),
+        updated_by: 1,
+        updated_at: new Date()
+    }
+]);
+
+// roles collection
+db.createCollection("roles");
+db.roles.createIndex({ "name": 1 }, { unique: true });
+db.roles.insertMany([
+    {
+        name: "admin",
+        description: "Admin Role",
+        created_by: 1,
+        created_at: new Date(),
+        updated_by: 1,
+        updated_at: new Date()
+    },
+    {
+        name: "IT Manager",
+        description: "IT Manager Role",
+        created_by: 1,
+        created_at: new Date(),
+        updated_by: 1,
+        updated_at: new Date()
+    },
+    {
+        name: "IT Support",
+        description: "IT Support Role",
+        created_by: 1,
+        created_at: new Date(),
+        updated_by: 1,
+        updated_at: new Date()
+    },
+    {
+        name: "Basic Role",
+        description: "Basic Role",
+        created_by: 1,
+        created_at: new Date(),
+        updated_by: 1,
+        updated_at: new Date()
+    }
+]);
+
+// user_roles collection (as an embedded array within users collection)
+db.users.updateOne({ "user_name": "admin" }, { $set: { "roles": ["admin"] } });
+
+// permissions collection
+db.createCollection("permissions");
+db.permissions.createIndex({ "code": 1 }, { unique: true });
+db.permissions.insertMany([
+    { code: "read_nav_bar", name: "Read Nav Bar" },
+    { code: "read_create_issue_menu", name: "Read Create Issue Menu" },
+    { code: "read_profile_menu", name: "Read Profile Menu" },
+    { code: "read_logout", name: "Read Logout" },
+    { code: "read_dashboard", name: "Read Dashboard" },
+    { code: "read_submitted_issues", name: "Read Submitted Issues" },
+    { code: "read_my_open_issues", name: "Read My Open Issues" },
+    { code: "read_all_open_issues", name: "Read All Open Issues" },
+    { code: "read_roles", name: "Read Roles" },
+    { code: "write_roles", name: "Write Roles" },
+    { code: "delete_roles", name: "Delete Roles" },
+    { code: "read_users", name: "Read Users" },
+    { code: "write_users", name: "Write Users" },
+    { code: "delete_users", name: "Delete Users" },
+    { code: "read_issues", name: "Read Issues" },
+    { code: "write_issues", name: "Write Issues" },
+    { code: "delete_issues", name: "Delete Issues" },
+    { code: "read_comments", name: "Read Comments" },
+    { code: "write_comments", name: "Write Comments" },
+    { code: "delete_comments", name: "Delete Comments" },
+    { code: "read_projects", name: "Read Projects" },
+    { code: "write_projects", name: "Write Projects" },
+    { code: "delete_projects", name: "Delete Projects" },
+    { code: "read_components", name: "Read Components" },
+    { code: "write_components", name: "Write Components" },
+    { code: "delete_components", name: "Delete Components" }
+]);
+
+// projects collection
+db.createCollection("projects");
+
+// components collection
+db.createCollection("components");
+
+// issues collection
+db.createCollection("issues");
+
+// comments collection
+db.createCollection("comments");

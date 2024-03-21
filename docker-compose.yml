@@ -11,5 +11,23 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: secureadmin
       MONGO_INITDB_DATABASE: support
+      MONGO_INITDB_HOST: localhost
+      MONGO_INITDB_PORT: 28000
     volumes:
       - ./db:/data/db
+
+  server:
+    build: ./server
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    image: itsm-backend
+
+  frontend:
+    build: ./frontend
+    ports:
+      - 5173:5173
+    depends_on:
+      - server
+    image: itsm-ui
