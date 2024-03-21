@@ -1,10 +1,9 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import axios from 'axios';
 
 const Login = (props) => {
-  const navigate = useNavigate();
   const [errorMessage, setError] = useState('');
+
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -22,7 +21,9 @@ const Login = (props) => {
       });
       if (res.status === 200) {
         console.log(res.data);
-        navigate('/home');
+        localStorage.setItem('isLoggedIn', true);
+        window.location.replace('/');
+
       } else {
         throw new Error('Invalid response from server');
       }
@@ -50,7 +51,7 @@ const Login = (props) => {
               value={username}
               onChange={onChange}
               required
-              autocomplete="off"
+              autoComplete='off'
               className="form-control"
             />
           </div>

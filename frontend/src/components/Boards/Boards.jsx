@@ -1,15 +1,15 @@
 import React from 'react';
 import Navbar from '../../Navbar';
 
-const Home = () => {
+const Boards = () => {
   return (
     <div>
       <Navbar />
-      <div className="container mt-4 text-center">
-        <h1>Welcome to ITSM</h1>
+      <div className="container mt-4">
+        <h1>Boards Here</h1>
       </div>
     </div>
   );
 };
 
-export default Home;
+export default Boards;
