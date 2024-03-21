@@ -40,7 +40,7 @@ To install this project, follow these steps:
 
 ## Usage
 
-To run the application, follow these steps:
+To run the application locally, follow these steps:
 
 1. **Start the Node.js server: Change directory to server folder** 
 
@@ -62,15 +62,16 @@ To run the application, follow these steps:
 
 To run the application with docker, follow these steps:
 
-1. In the terminal run the following
+1. Update the **.env** file. Set ENABLE_DOCKER=true
+
+2. In the terminal run the following
 
     ```
-    update .env file ENABLE_DOCKER=true
     go to the root directory and run
     docker compose -f "docker-compose.yml" up -d --build 
     ```
 
-2. **Access the application:** 
+3. **Access the application:** 
 
     Open a web browser and navigate to `http://localhost:5173`.
 
