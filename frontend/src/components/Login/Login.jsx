@@ -20,8 +20,10 @@ const Login = (props) => {
         password
       });
       if (res.status === 200) {
-        console.log(res.data);
+        console.log(JSON.stringify(res.data.user));
         localStorage.setItem('isLoggedIn', true);
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('user', JSON.stringify(res.data.user));
         window.location.replace('/');
 
       } else {

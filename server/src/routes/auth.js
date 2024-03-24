@@ -27,7 +27,7 @@ app.post('/api/auth/login', async (req, res) => {
       userName: user.user_name,
       firstName: user.first_name,
       lastName: user.last_name,
-      roles: user.roles,
+      roles: user.roles
     };
 
     const token = jwt.sign(newUser, process.env.JWT_SEED);

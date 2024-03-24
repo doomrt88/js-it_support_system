@@ -15,7 +15,7 @@ const UserSchema = new Schema({
   },
   last_name: String,
   created_by: {
-    type: Number,
+    type: String,
     required: true
   },
   created_at: {
@@ -23,7 +23,7 @@ const UserSchema = new Schema({
     default: Date.now
   },
   updated_by: {
-    type: Number,
+    type: String,
     required: true
   },
   updated_at: {

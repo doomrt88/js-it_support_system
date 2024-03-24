@@ -2,11 +2,11 @@ import jwt from "jsonwebtoken";
 
 export const validateToken = (request, response, next) => {
   const token = request.get("Authorization");
-
+  console.log(token);
   if (!token) {
-    return response.status(400).json({
-      error: "bad request",
-      message: "No body provided",
+    return response.status(403).json({
+      error: "Forbidden",
+      message: "Forbidden request",
     });
   }
 
@@ -15,7 +15,7 @@ export const validateToken = (request, response, next) => {
     request.user = tokenPayload;
     next();
   } catch (error) {
-    return response.status(400).json({
+    return response.status(403).json({
       error: "Unauthorized",
       message: "Invalid token",
     });
