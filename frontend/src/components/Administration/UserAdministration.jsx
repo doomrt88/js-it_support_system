@@ -119,11 +119,7 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
       </table>
 
       {showDialog && (
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
-          <div className="modal-dialog" role="document">
-            <UserDialog onSubmit={handleFormSubmit} onCancel={handleCloseDialog} userFormDetails={userDetails}/>
-          </div>
-        </div>
+        <UserDialog onSubmit={handleFormSubmit} onCancel={handleCloseDialog} userFormDetails={userDetails}/>
       )}
 
       {showConfirmDialog && (

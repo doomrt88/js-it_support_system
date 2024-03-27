@@ -115,11 +115,7 @@ const RoleAdministration = ({ onSubmit, onCancel }) => {
       </table>
 
       {showDialog && (
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
-          <div className="modal-dialog" role="document">
-            <RoleDialog onSubmit={handleFormSubmit} onCancel={handleCloseDialog} roleFormDetails={roleDetails}/>
-          </div>
-        </div>
+        <RoleDialog onSubmit={handleFormSubmit} onCancel={handleCloseDialog} roleFormDetails={roleDetails}/>
       )}
 
       {showConfirmDialog && (

@@ -5,6 +5,7 @@ import Home from './components/Home/Home'
 import React, { useEffect, useState } from 'react'
 import Boards from './components/Boards/Boards'
 import Administration from './components/Administration/Administration'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
 

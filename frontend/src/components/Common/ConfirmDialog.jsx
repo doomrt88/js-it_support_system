@@ -1,26 +1,21 @@
 import React from 'react';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 const ConfirmDialog = ({ message, onConfirm, onCancel }) => {
   return (
-    <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
-      <div className="modal-dialog" role="document">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">Confirm Action</h5>
-            <button type="button" className="close" onClick={onCancel} aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div className="modal-body">
-            <p>{message}</p>
-          </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-danger" onClick={onConfirm}>Confirm</button>
-            <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Modal show={true} onHide={onCancel}>
+      <Modal.Header closeButton>
+        <Modal.Title>Confirm Action</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>{message}</p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="danger" onClick={onConfirm}>Confirm</Button>
+        <Button variant="secondary" onClick={onCancel}>Cancel</Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 

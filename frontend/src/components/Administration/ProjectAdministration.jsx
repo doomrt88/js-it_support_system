@@ -119,11 +119,7 @@ const ProjectAdministration = ({ onSubmit, onCancel }) => {
       </table>
 
       {showDialog && (
-        <div className="modal" tabIndex="-1" project="dialog" style={{ display: 'block' }}>
-          <div className="modal-dialog" project="document">
-            <ProjectDialog onSubmit={handleFormSubmit} onCancel={handleCloseDialog} projectFormDetails={projectDetails}/>
-          </div>
-        </div>
+        <ProjectDialog onSubmit={handleFormSubmit} onCancel={handleCloseDialog} projectFormDetails={projectDetails}/>
       )}
 
       {showConfirmDialog && (

@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 
 const RoleDialog = ({ onSubmit, onCancel, roleFormDetails }) => {
     const [roles, setRoles] = useState([]);
@@ -41,28 +44,33 @@ const RoleDialog = ({ onSubmit, onCancel, roleFormDetails }) => {
     };
 
   return (
-        <div className="modal-content">
-        <div className="modal-header">
-            <h5 className="modal-title">Role</h5>
-            <button type="button" className="close" onClick={handleClose} aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div className="modal-body">
-            <form onSubmit={handleSubmit}>
-            <div className="form-group">
-                <label>Role Name</label>
-                <input type="text" className="form-control" name="name" value={formData.name} onChange={handleChange} required autoComplete='off'/>
-            </div>
-            <div className="form-group">
-                <label>Description</label>
-                <textarea rows={10} className="form-control" name="description" value={formData.description} onChange={handleChange} required autoComplete='off' ></textarea>
-            </div>
-            <button type="submit" className="btn btn-primary mr-2">Submit</button>
-            <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
-            </form>
-        </div>
-        </div>
+      <Modal show={true} onHide={handleClose} keyboard={false} backdrop="static">
+        <Modal.Header closeButton>
+          <Modal.Title>Role</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Role Name</Form.Label>
+              <Form.Control type="text" name="name" value={formData.name} autoFocus onChange={handleChange} required autoComplete='off'
+              />
+            </Form.Group>
+            <Form.Group
+              className="mb-3">
+              <Form.Label>Description</Form.Label>
+              <Form.Control as="textarea" rows={10} name="description" value={formData.description} onChange={handleChange} required autoComplete='off' />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose} size="md">
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleSubmit} size="md">
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     );
 };
 
