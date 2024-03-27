@@ -91,7 +91,7 @@ const UserDialog = ({ onSubmit, onCancel, userFormDetails }) => {
   };
 
   return (
-    <Modal show={true} onHide={handleClose} keyboard={false} backdrop="static">
+    <Modal show={true} onHide={handleClose} keyboard={false} backdrop="static"  size="lg">
       <Modal.Header closeButton>
         <Modal.Title>User</Modal.Title>
       </Modal.Header>
@@ -143,37 +143,45 @@ const UserDialog = ({ onSubmit, onCancel, userFormDetails }) => {
               autoComplete="off"
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formRoles">
-            <Form.Label>Roles</Form.Label>
-            <div>
-              {roles.map(role => (
-                <Form.Check
-                  key={role._id}
-                  type="checkbox"
-                  id={`role-${role._id}`}
-                  label={role.name}
-                  checked={selectedRoles.includes(role.name)}
-                  onChange={() => handleRoleToggle(role.name)}
-                />
-              ))}
+          <div class="row">
+            <div class="col-md-6">
+            <Form.Group className="mb-3" controlId="formRoles">
+              <Form.Label>Roles</Form.Label>
+              <div>
+                {roles.map(role => (
+                  <Form.Check
+                    key={role._id}
+                    type="checkbox"
+                    id={`role-${role._id}`}
+                    label={role.name}
+                    checked={selectedRoles.includes(role.name)}
+                    onChange={() => handleRoleToggle(role.name)}
+                  />
+                ))}
+              </div>
+              <Form.Control.Feedback type="invalid">Please select at least one role.</Form.Control.Feedback>
+            </Form.Group>
             </div>
-            <Form.Control.Feedback type="invalid">Please select at least one role.</Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formProjects">
-            <Form.Label>Projects</Form.Label>
-            <div>
-              {projects.map(project => (
-                <Form.Check
-                  key={project._id}
-                  type="checkbox"
-                  id={`project-${project._id}`}
-                  label={project.name}
-                  checked={selectedProjects.includes(project._id)}
-                  onChange={() => handleProjectToggle(project._id)}
-                />
-              ))}
+            <div class="col-md-6">
+            <Form.Group className="mb-3" controlId="formProjects">
+                <Form.Label>Projects</Form.Label>
+                <div>
+                  {projects.map(project => (
+                    <Form.Check
+                      key={project._id}
+                      type="checkbox"
+                      id={`project-${project._id}`}
+                      label={project.name}
+                      checked={selectedProjects.includes(project._id)}
+                      onChange={() => handleProjectToggle(project._id)}
+                    />
+                  ))}
+                </div>
+              </Form.Group>
             </div>
-          </Form.Group>
+          </div>
+          
+          
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose} size="md">
               Cancel
