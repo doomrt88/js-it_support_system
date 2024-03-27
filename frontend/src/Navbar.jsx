@@ -1,14 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from './axios_interceptor'
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import CreateIssueDialog from './components/Issues/CreateIssueDialog';
 
 const Navbar = () => {
+    const [showDialog, setShowDialog] = useState(false);
+    const [issue, setIssue] = useState(null);
+
     const navigate = useNavigate();
     const handleLogout = () =>{
         localStorage.clear();
         navigate('/login');
     }
 
+    const handleCreateIssue = () => {
+      setShowDialog(true);
+      setIssue(null);
+    };
+
+    const handleFormSubmit = async (formData) => {
+      try {
+        await axios.post(`${BASE_URL}/issues`, formData);
+        handleCloseDialog();
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+  
+    const handleCloseDialog = () => {
+      setShowDialog(false);
+      setIssue(null);
+    };
+
+    
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <Link className="navbar-brand" to="/">ITSM</Link>
@@ -21,7 +47,7 @@ const Navbar = () => {
               <Link className="nav-link" to="/boards">Boards</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/create">Create</Link>
+              <Button variant="outline-secondary" onClick={handleCreateIssue}>Create</Button>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/administration">Administration</Link>
@@ -41,6 +67,10 @@ const Navbar = () => {
             </ul>
           </li>
         </div>
+
+        {showDialog && (
+          <CreateIssueDialog onSubmit={handleFormSubmit} onCancel={handleCloseDialog}/>
+        )}
 
 
       </nav>

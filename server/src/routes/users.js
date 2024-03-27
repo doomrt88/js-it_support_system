@@ -29,7 +29,19 @@ app.get("/users/:id", [validateToken], (request, response) => {
 });
 
 // Get all users
-app.get("/users", [validateToken], (_, response) => {
+app.get("/users", [validateToken], (request, response) => {
+  const { search } = request.query;
+  let filter = {};
+  if (search) {
+    filter = {
+      $or: [
+        { user_name: { $regex: search, $options: "i" } },
+        { first_name: { $regex: search, $options: "i" } },
+        { last_name: { $regex: search, $options: "i" } },
+      ],
+    };
+  }
+
   UserModel.aggregate([
     {
       $lookup: {
@@ -48,6 +60,9 @@ app.get("/users", [validateToken], (_, response) => {
         roles: 1,
         projects: "$projects.name"
       }
+    },
+    {
+      $match: filter,
     }
   ])
   .then((users) => {
