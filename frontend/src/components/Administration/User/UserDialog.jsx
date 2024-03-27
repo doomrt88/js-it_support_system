@@ -7,6 +7,8 @@ import Modal from 'react-bootstrap/Modal';
 const UserDialog = ({ onSubmit, onCancel, userFormDetails }) => {
   const [roles, setRoles] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [selectedProjects, setSelectedProjects] = useState([]);
 
   const [formData, setFormData] = useState({
     user_name: userFormDetails ? userFormDetails.user_name : '',
@@ -25,7 +27,17 @@ const UserDialog = ({ onSubmit, onCancel, userFormDetails }) => {
       }
     };
 
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/projects`);
+        setProjects(response.data);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+    };
+
     fetchRoles();
+    fetchProjects();
   }, []);
 
   useEffect(() => {
@@ -37,6 +49,7 @@ const UserDialog = ({ onSubmit, onCancel, userFormDetails }) => {
         last_name: userFormDetails.last_name || ''
       });
       setSelectedRoles(userFormDetails.roles);
+      setSelectedProjects(userFormDetails.projects);
     }
   }, [userFormDetails]);
 
@@ -51,7 +64,8 @@ const UserDialog = ({ onSubmit, onCancel, userFormDetails }) => {
     e.preventDefault();
     const updatedFormData = {
       ...formData,
-      roles: selectedRoles
+      roles: selectedRoles,
+      projects: selectedProjects
     };
     onSubmit(updatedFormData);
   };
@@ -67,7 +81,15 @@ const UserDialog = ({ onSubmit, onCancel, userFormDetails }) => {
       setSelectedRoles([...selectedRoles, roleName]);
     }
   };
-  
+
+  const handleProjectToggle = (projectId) => {
+    if (selectedProjects.includes(projectId)) {
+      setSelectedProjects(selectedProjects.filter(id => id !== projectId));
+    } else {
+      setSelectedProjects([...selectedProjects, projectId]);
+    }
+  };
+
   return (
     <Modal show={true} onHide={handleClose} keyboard={false} backdrop="static">
       <Modal.Header closeButton>
@@ -136,6 +158,21 @@ const UserDialog = ({ onSubmit, onCancel, userFormDetails }) => {
               ))}
             </div>
             <Form.Control.Feedback type="invalid">Please select at least one role.</Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formProjects">
+            <Form.Label>Projects</Form.Label>
+            <div>
+              {projects.map(project => (
+                <Form.Check
+                  key={project._id}
+                  type="checkbox"
+                  id={`project-${project._id}`}
+                  label={project.name}
+                  checked={selectedProjects.includes(project._id)}
+                  onChange={() => handleProjectToggle(project._id)}
+                />
+              ))}
+            </div>
           </Form.Group>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose} size="md">

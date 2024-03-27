@@ -30,18 +30,36 @@ app.get("/users/:id", [validateToken], (request, response) => {
 
 // Get all users
 app.get("/users", [validateToken], (_, response) => {
-  UserModel.find()
-    .then((users) => {
-      const userVM = mapToViewModel(users);
-      console.log(userVM);
-      return response.status(200).json(userVM);
-    })
-    .catch((error) => {
-      return response.status(400).json({
-        error: "Error finding users",
-        message: error,
-      });
+  UserModel.aggregate([
+    {
+      $lookup: {
+        from: "projects",
+        localField: "projects",
+        foreignField: "_id",
+        as: "projects"
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        user_name: 1,
+        first_name: 1,
+        last_name: 1,
+        roles: 1,
+        projects: "$projects.name"
+      }
+    }
+  ])
+  .then((users) => {
+    const userVM = mapToViewModel(users);
+    return response.status(200).json(userVM);
+  })
+  .catch((error) => {
+    return response.status(400).json({
+      error: "Error finding users",
+      message: error
     });
+  });
 });
 
 // Create user
@@ -112,7 +130,7 @@ app.delete("/users/:id", [validateToken], (request, response) => {
 });
 
 // Update
-app.put("/users/:id", [validateToken], (request, response) => {
+app.put("/users/:id", [validateToken], async (request, response) => {
   const { id } = request.params;
   const body = request.body;
   
@@ -124,11 +142,13 @@ app.put("/users/:id", [validateToken], (request, response) => {
     });
   }
 
-  const newBody = { ...body };
+  const password = await generatePassword(body.password);
+  const newBody = { ...body, password };
+  
   newBody.updated_by = request.user.id,
   newBody.updated_at = new Date();
 
-  UserModel.findByIdAndUpdate(id, body, { new: true })
+  UserModel.findByIdAndUpdate(id, newBody, { new: true })
     .then((user) => {
       if (!user) {
         return response.status(404).json({
@@ -150,12 +170,12 @@ app.put("/users/:id", [validateToken], (request, response) => {
 });
 
 function mapToViewModel(users) {
-  console.log(users);
   return users.map(user => ({
     id: user._id.toString(),
     user_name: user.user_name,
     friendly_name: `${user.first_name} ${user.last_name}`,
-    roles: user.roles.map(role => role).join(", ")
+    roles: user.roles.map(role => role).join(", "),
+    projects: user.projects.map(project => project).join(", ") 
   }));
 }
 

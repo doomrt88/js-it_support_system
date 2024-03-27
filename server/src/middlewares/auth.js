@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 
 export const validateToken = (request, response, next) => {
   const token = request.get("Authorization");
-  console.log(token);
   if (!token) {
     return response.status(403).json({
       error: "Forbidden",

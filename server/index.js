@@ -26,7 +26,6 @@ const port = 3000;
 //     console.error(err);
 //   });
 
-console.log(process.env.ENABLE_DOCKER);
 console.log(process.env.ENABLE_DOCKER == 'true');
 const mongodbConnString = process.env.ENABLE_DOCKER == 'true' ? `mongodb://db:27017` : `mongodb://${process.env.MONGO_INITDB_HOST}:${process.env.MONGO_INITDB_PORT}`;
 console.log(mongodbConnString);
@@ -44,16 +43,16 @@ mongoose.connect(mongodbConnString, {
   });
 
 // Connect to MongoDB using Mongoose
-mongoose.connect(mongodbConnString, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(() => {
-  console.log("Database connected");
-})
-.catch((err) => {
-  console.error(err);
-});
+// mongoose.connect(mongodbConnString, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// })
+// .then(() => {
+//   console.log("Database connected");
+// })
+// .catch((err) => {
+//   console.error(err);
+// });
 
 // use this to connect to a local mongodb server
 // DB URIs here

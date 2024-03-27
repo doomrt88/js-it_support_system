@@ -21,7 +21,6 @@ const ProjectAdministration = ({ onSubmit, onCancel }) => {
     setShowDialog(true);
     try {
       const response = await axios.get(`${BASE_URL}/projects/${project._id}`);
-      console.log(response.data);
       setProjectDetails(response.data); // Set projectDetails first
       setSelectedProject(response.data); // Then set selectedProject
     } catch (error) {
@@ -65,7 +64,6 @@ const ProjectAdministration = ({ onSubmit, onCancel }) => {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/projects`);
-      console.log(response.data);
       setProjects(response.data);
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -90,7 +88,7 @@ const ProjectAdministration = ({ onSubmit, onCancel }) => {
   return (
     <div>
       <h1>Project Management</h1>
-      <button className="btn btn-primary mb-3" onClick={handleAddProject}>Add Project</button>
+      <button className="btn btn-primary mb-3 mt-4" onClick={handleAddProject}>Add Project</button>
 
       <table className="table table-sm">
         <thead>

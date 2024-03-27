@@ -1,0 +1,9 @@
+.permissions-container {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .permissions-scrollable {
+    overflow-y: auto;
+  }
+  

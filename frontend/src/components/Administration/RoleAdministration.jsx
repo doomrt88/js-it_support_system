@@ -21,7 +21,6 @@ const RoleAdministration = ({ onSubmit, onCancel }) => {
     setShowDialog(true);
     try {
       const response = await axios.get(`${BASE_URL}/roles/${role._id}`);
-      console.log(response.data);
       setRoleDetails(response.data); // Set roleDetails first
       setSelectedRole(response.data); // Then set selectedRole
     } catch (error) {
@@ -65,7 +64,6 @@ const RoleAdministration = ({ onSubmit, onCancel }) => {
   const fetchRoles = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/roles`);
-      console.log(response.data);
       setRoles(response.data);
     } catch (error) {
       console.error('Error fetching roles:', error);
@@ -90,7 +88,7 @@ const RoleAdministration = ({ onSubmit, onCancel }) => {
   return (
     <div>
       <h1>Role Management</h1>
-      <button className="btn btn-primary mb-3" onClick={handleAddRole}>Add Role</button>
+      <button className="btn btn-primary mb-3 mt-4" onClick={handleAddRole}>Add Role</button>
 
       <table className="table table-sm">
         <thead>

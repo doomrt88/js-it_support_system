@@ -1,5 +1,6 @@
 import express from "express";
 import RoleModel from "../models/roles.js";
+import PermissionModel from "../models/permissions.js";
 import { validateToken } from "../middlewares/auth.js";
 
 const app = express();
@@ -16,6 +17,10 @@ app.get("/roles/:id", [validateToken], (request, response) => {
   }
 
   RoleModel.findById(id)
+    .populate({
+      path: 'permissions',
+      select: '_id'
+    })
     .then((role) => {
       return response.status(200).json(role);
     })
@@ -30,10 +35,15 @@ app.get("/roles/:id", [validateToken], (request, response) => {
 // Get all roles
 app.get("/roles", [validateToken], (_, response) => {
   RoleModel.find()
+    .populate({
+      path: 'permissions',
+      select: '_id'
+    })
     .then((roles) => {
       return response.status(200).json(roles);
     })
     .catch((error) => {
+      console.log(error);
       return response.status(400).json({
         error: "Error finding roles",
         message: error,
@@ -43,6 +53,14 @@ app.get("/roles", [validateToken], (_, response) => {
 
 // Create role
 app.post("/roles", [validateToken], async (request, response) => {
+  const { name, description, permissions } = request.body;
+  if (!name || !permissions || !Array.isArray(permissions)) {
+    return response.status(400).json({
+      error: "Bad Request",
+      message: "Name and permissions are required",
+    });
+  }
+
   const newBody = { ...request.body };
 
   newBody.created_by = request.user.id,
@@ -99,13 +117,21 @@ app.delete("/roles/:id", [validateToken], (request, response) => {
 
 // Update
 app.put("/roles/:id", [validateToken], (request, response) => {
+  const { name, description, permissions } = request.body;
+  if (!name || !permissions || !Array.isArray(permissions)) {
+    return response.status(400).json({
+      error: "Bad Request",
+      message: "Name and permissions are required",
+    });
+  }
+
   const { id } = request.params;
   const body = request.body;
   
   if (!id || !body) {
     // Bad request
     return response.status(400).json({
-      error: "bad request",
+      error: "Bad Request",
       message: "No ID or body provided",
     });
   }

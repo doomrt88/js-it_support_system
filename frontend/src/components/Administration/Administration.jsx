@@ -8,8 +8,8 @@ const Administration = () => {
   return (
     <div className="container-fluid">
       <Navbar />
-      <div className="container mt-4">
-        <h1>Administration</h1>
+      <div className="row mt-4">
+        <h1 className="col-sm-12">Administration</h1>
       </div>
       <hr></hr>
       <div className="row">

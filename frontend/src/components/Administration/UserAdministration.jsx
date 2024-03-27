@@ -92,7 +92,7 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
   return (
     <div>
       <h1>User Management</h1>
-      <button className="btn btn-primary mb-3" onClick={handleAddUser}>Add User</button>
+      <button className="btn btn-primary mb-3 mt-4" onClick={handleAddUser}>Add User</button>
 
       <table className="table table-sm">
         <thead>
@@ -100,6 +100,7 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
             <th>User Name</th>
             <th>Name</th>
             <th>Roles</th>
+            <th>Projects</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -109,6 +110,7 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
               <td>{user.user_name}</td>
               <td>{user.friendly_name}</td>
               <td>{user.roles}</td>
+              <td>{user.projects}</td>
               <td>
                 <button className="btn btn-sm btn-primary mr-2" onClick={() => handleEditUser(user)}><i className="fas fa-edit"></i> Edit</button>
                 <button className="btn btn-sm btn-danger" onClick={() => deleteUser(user.id)}><i className="fas fa-trash"></i> Delete</button>

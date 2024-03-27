@@ -33,7 +33,8 @@ const UserSchema = new Schema({
   roles: {
     type: [String],
     default: []
-  }
+  },
+  projects: [{ type: Schema.Types.ObjectId, ref: 'projects' }]
 });
 
 const UserModel = mongoose.model("users", UserSchema);

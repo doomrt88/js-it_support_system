@@ -22,7 +22,8 @@ const RoleSchema = new Schema({
   updated_at: {
     type: Date,
     default: Date.now
-  }
+  },
+  permissions: [{ type: Schema.Types.ObjectId, ref: 'permissions' }]
 });
 
 const RoleModel = mongoose.model("roles", RoleSchema);

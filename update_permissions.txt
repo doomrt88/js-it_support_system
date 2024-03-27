@@ -1,0 +1,51 @@
+// run this in mongosh
+
+use support;
+
+// ADDED: 2024-03-28. Run this in shell to add group_name for each permission
+db.permissions.updateMany(
+    { code: { $in: ["read_nav_bar", "read_create_issue_menu", "read_profile_menu", "read_logout", "read_dashboard"] } },
+    { $set: { group_name: "Main Menu" } }
+);
+
+// Update permissions with group_name "Boards"
+db.permissions.updateMany(
+    { code: { $in: ["read_submitted_issues", "read_my_open_issues", "read_all_open_issues"] } },
+    { $set: { group_name: "Boards" } }
+);
+
+// Update permissions with group_name "Roles"
+db.permissions.updateMany(
+    { code: { $in: ["read_roles", "write_roles", "delete_roles"] } },
+    { $set: { group_name: "Roles" } }
+);
+
+// Update permissions with group_name "Users"
+db.permissions.updateMany(
+    { code: { $in: ["read_users", "write_users", "delete_users"] } },
+    { $set: { group_name: "Users" } }
+);
+
+// Update permissions with group_name "Issues"
+db.permissions.updateMany(
+    { code: { $in: ["read_issues", "write_issues", "delete_issues"] } },
+    { $set: { group_name: "Issues" } }
+);
+
+// Update permissions with group_name "Comments"
+db.permissions.updateMany(
+    { code: { $in: ["read_comments", "write_comments", "delete_comments"] } },
+    { $set: { group_name: "Comments" } }
+);
+
+// Update permissions with group_name "Projects"
+db.permissions.updateMany(
+    { code: { $in: ["read_projects", "write_projects", "delete_projects"] } },
+    { $set: { group_name: "Projects" } }
+);
+
+// Update permissions with group_name "Components"
+db.permissions.updateMany(
+    { code: { $in: ["read_components", "write_components", "delete_components"] } },
+    { $set: { group_name: "Components" } }
+);
