@@ -34,6 +34,9 @@ const Navbar = () => {
       setIssue(null);
     };
 
+    const handleAccount = () =>{
+      navigate('/account');
+  }
     
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -60,9 +63,7 @@ const Navbar = () => {
               <i className="fas fa-user"></i>
             </a>
             <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-              <li>
-                <a className="dropdown-item" href="#">Account</a>
-              </li>
+              <Link className="dropdown-item" to="/account" onClick={handleAccount}>Account</Link>
               <Link className="dropdown-item" to="/login" onClick={handleLogout}>Logout</Link>
             </ul>
           </li>

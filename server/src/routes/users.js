@@ -17,15 +17,27 @@ app.get("/users/:id", [validateToken], (request, response) => {
   }
 
   UserModel.findById(id)
-    .then((user) => {
-      return response.status(200).json(user);
-    })
-    .catch((error) => {
-      return response.status(400).json({
-        error: "Error finding user",
-        message: error,
+  .populate({
+    path: 'projects',
+    select: '_id name' 
+  })
+  .populate('roles') 
+  .then((user) => {
+    if (!user) {
+      return response.status(404).json({
+        error: "User not found",
+        message: "User with the provided ID does not exist",
       });
+    }
+    return response.status(200).json(user);
+  })
+  .catch((error) => {
+    return response.status(400).json({
+      error: "Error finding user",
+      message: error.message,
     });
+  });
+  
 });
 
 // Get all users

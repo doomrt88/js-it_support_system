@@ -32,6 +32,7 @@ app.get("/issues", [validateToken], (_, response) => {
   IssueModel
   .find()
   .populate('assigned_to')
+  .populate('project')
   .then((issues) => {
       return response.status(200).json(issues);
     })
@@ -52,6 +53,7 @@ app.get("/my-submitted-issues/:user_id", [validateToken], (request, response) =>
   IssueModel
     .find({ created_by: userId })
     .populate('assigned_to')
+    .populate('project')
     .then((issues) => {
       return response.status(200).json(issues);
     })
@@ -73,6 +75,7 @@ app.get("/my-open-issues/:user_id", [validateToken], (request, response) => {
   IssueModel
     .find({ assigned_to: userId, status: { $in: ['New', 'In Progress'] } }) 
     .populate('assigned_to')
+    .populate('project')
     .then((issues) => {
       return response.status(200).json(issues);
     })
@@ -95,6 +98,7 @@ app.get("/closed-issues/:user_id", [validateToken], (request, response) => {
   IssueModel
     .find({ assigned_to: userId, status: 'Closed' })
     .populate('assigned_to')
+    .populate('project')
     .then((issues) => {
       return response.status(200).json(issues);
     })
@@ -108,8 +112,12 @@ app.get("/closed-issues/:user_id", [validateToken], (request, response) => {
 
 app.get("/open-issues", [validateToken], (request, response) => {
    IssueModel
-    .find({ assigned_to: userId, status: { $in: ['New', 'In Progress']} })
+    .find({ status: { $in: ['New', 'In Progress']} })
     .populate('assigned_to')
+    .populate({
+      path: 'project',
+      select: '_id name'
+    })
     .then((issues) => {
       return response.status(200).json(issues);
     })

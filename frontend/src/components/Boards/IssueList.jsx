@@ -40,6 +40,7 @@ const IssueList = ({ userId, pageTitle }) => {
       <table className="table table-sm mt-4">
         <thead>
           <tr>
+            <th>Project</th>
             <th>Summary</th>
             <th>Description</th>
             <th>Start Date</th>
@@ -52,6 +53,7 @@ const IssueList = ({ userId, pageTitle }) => {
         <tbody>
           {issues.map(issue => (
             <tr key={issue._id}>
+              <td>{issue.project.name}</td>
               <td>{issue.title}</td>
               <td>{issue.description}</td>
               <td>{issue.start_date ? new Date(issue.start_date).toLocaleDateString() : '-'}</td>

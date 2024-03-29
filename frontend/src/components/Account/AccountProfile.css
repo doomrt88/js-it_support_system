@@ -1,0 +1,10 @@
+.profile-photo-container {
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  padding: 45px;
+  background-color: #f8f9fa; 
+}
+
+.profile-icon {
+  color: #555; 
+}

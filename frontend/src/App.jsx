@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import Boards from './components/Boards/Boards'
 import Administration from './components/Administration/Administration'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import AccountProfile from './components/Account/AccountProfile'
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login" />}/>
           <Route path="/boards" element={isLoggedIn ? <Boards /> : <Navigate to="/login" />}/>
           <Route path="/administration" element={isLoggedIn ? <Administration /> : <Navigate to="/login" />}/>
+          <Route path="/account" element={isLoggedIn ? <AccountProfile /> : <Navigate to="/login" />}/>
         </Routes>
       </BrowserRouter>
     </div>
