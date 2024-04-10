@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import CreateIssueDialog from './components/Issues/CreateIssueDialog';
+import { toast } from 'react-toastify';
 
 const Navbar = () => {
     const [showDialog, setShowDialog] = useState(false);
@@ -12,6 +13,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const handleLogout = () =>{
         localStorage.clear();
+        sessionStorage.clear();
         navigate('/login');
     }
 
@@ -22,10 +24,20 @@ const Navbar = () => {
 
     const handleFormSubmit = async (formData) => {
       try {
-        await axios.post(`${BASE_URL}/issues`, formData);
+        const response = await axios.post(`${BASE_URL}/issues`, formData);
+
+        if (response.status === 200 || response.status === 201) {
+          toast.success(`Issue has been created successfully.`, { autoClose: 700 });
+          handleCloseDialog();
+  
+        } else {
+          throw new Error('Invalid response from server');
+        }
+
         handleCloseDialog();
       } catch (error) {
         console.error('Error:', error);
+        toast.error(error.response ? error.response.data.message : error.message);
       }
     };
   
@@ -39,8 +51,8 @@ const Navbar = () => {
   }
     
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <Link className="navbar-brand" to="/">ITSM</Link>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <Link className="navbar-brand brand-name" to="/">IT Services</Link>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
@@ -50,7 +62,7 @@ const Navbar = () => {
               <Link className="nav-link" to="/boards">Boards</Link>
             </li>
             <li className="nav-item">
-              <Button variant="outline-secondary" onClick={handleCreateIssue}>Create</Button>
+              <Button variant="outline-primary" onClick={handleCreateIssue}>Create</Button>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/administration">Administration</Link>

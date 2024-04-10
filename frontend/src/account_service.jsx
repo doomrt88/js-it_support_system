@@ -5,7 +5,8 @@ const AccountService = (WrappedComponent) => {
     const [userId, setUserId] = useState('');
 
     useEffect(() => {
-      const user = JSON.parse(localStorage.getItem('user'));
+      const cachedUser = sessionStorage.getItem('user') ? sessionStorage.getItem('user') : localStorage.getItem('user');
+      const user = JSON.parse(cachedUser);
       console.log(user);
       if (user) {
         setUserId(user.id);

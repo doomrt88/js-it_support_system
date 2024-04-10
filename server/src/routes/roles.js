@@ -61,6 +61,14 @@ app.post("/roles", [validateToken], async (request, response) => {
     });
   }
 
+  const nameExists = await isRoleExists(name);
+  if (nameExists) {
+    return response.status(400).json({
+      error: "Name already exists",
+      message: "The role name is already in use",
+    });
+  }
+  
   const newBody = { ...request.body };
 
   newBody.created_by = request.user.id,
@@ -116,7 +124,7 @@ app.delete("/roles/:id", [validateToken], (request, response) => {
 });
 
 // Update
-app.put("/roles/:id", [validateToken], (request, response) => {
+app.put("/roles/:id", [validateToken], async (request, response) => {
   const { name, description, permissions } = request.body;
   if (!name || !permissions || !Array.isArray(permissions)) {
     return response.status(400).json({
@@ -133,6 +141,14 @@ app.put("/roles/:id", [validateToken], (request, response) => {
     return response.status(400).json({
       error: "Bad Request",
       message: "No ID or body provided",
+    });
+  }
+
+  const nameExists = await isRoleExists(name, id);
+  if (nameExists) {
+    return response.status(400).json({
+      error: "Name already exists",
+      message: "The role name is already in use",
     });
   }
 
@@ -160,5 +176,19 @@ app.put("/roles/:id", [validateToken], (request, response) => {
       });
     });
 });
+
+async function isRoleExists(name, id = null) {
+  try {
+    const query = { name: name };
+    if (id) {
+      query._id = { $ne: id };
+    }
+    const existingRole = await RoleModel.findOne(query);
+    return !!existingRole;
+  } catch (error) {
+    console.error("Error checking name:", error.message);
+    return true;
+  }
+}
 
 export default app;

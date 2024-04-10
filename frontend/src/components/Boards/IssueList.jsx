@@ -35,9 +35,9 @@ const IssueList = ({ userId, pageTitle }) => {
 
   return (
     <div>
-      <h1>{pageTitle}</h1>
+      <h4>{pageTitle}</h4>
 
-      <table className="table table-sm mt-4">
+      <table className="table table-md mt-4">
         <thead>
           <tr>
             <th>Project</th>
@@ -53,12 +53,16 @@ const IssueList = ({ userId, pageTitle }) => {
         <tbody>
           {issues.map(issue => (
             <tr key={issue._id}>
-              <td>{issue.project.name}</td>
+              <td>{issue.project?.name}</td>
               <td>{issue.title}</td>
               <td>{issue.description}</td>
               <td>{issue.start_date ? new Date(issue.start_date).toLocaleDateString() : '-'}</td>
               <td>{new Date(issue.due_date).toLocaleDateString()}</td>
-              <td>P{issue.priority}</td>
+              <td>
+                {issue.priority === 1 && <span className="badge badge-danger">P1</span>}
+                {issue.priority === 2 && <span className="badge badge-warning">P2</span>}
+                {issue.priority !== 1 && issue.priority !== 2 && <span className="badge badge-primary">P{issue.priority}</span>}
+              </td>
               <td>{issue.status}</td>
               <td>{issue.assigned_to.first_name} {issue.assigned_to.last_name}</td>
             </tr>

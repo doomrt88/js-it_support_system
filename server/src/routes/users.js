@@ -101,6 +101,14 @@ app.post("/users", [validateToken], async (request, response) => {
     });
   }
 
+  const usernameTaken = await isUsernameTaken(body.user_name);
+  if (usernameTaken) {
+    return response.status(400).json({
+      error: "Username already exists",
+      message: "The username is already in use",
+    });
+  }
+  
   const password = await generatePassword(body.password);
   const newBody = { ...body, password };
 
@@ -169,6 +177,14 @@ app.put("/users/:id", [validateToken], async (request, response) => {
     });
   }
 
+  const usernameTaken = await isUsernameTaken(body.user_name, id);
+  if (usernameTaken) {
+    return response.status(400).json({
+      error: "Username already exists",
+      message: "The username is already in use",
+    });
+  }
+
   const password = await generatePassword(body.password);
   const newBody = { ...body, password };
   
@@ -205,5 +221,21 @@ function mapToViewModel(users) {
     projects: user.projects.map(project => project).join(", ") 
   }));
 }
+
+async function isUsernameTaken(username, userId = null) {
+  try {
+    const query = { user_name: username };
+    if (userId) {
+      query._id = { $ne: userId };
+    }
+    const existingUser = await UserModel.findOne(query);
+    return !!existingUser;
+  } catch (error) {
+    console.error("Error checking username:", error.message);
+    return true;
+  }
+}
+
+
 
 export default app;

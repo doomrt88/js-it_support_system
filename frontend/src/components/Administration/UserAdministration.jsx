@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../../axios_interceptor'
 import UserDialog from './User/UserDialog';
 import ConfirmDialog from '../Common/ConfirmDialog';
+import { toast } from 'react-toastify';
 
 const UserAdministration = ({ onSubmit, onCancel }) => {
   const [users, setUsers] = useState([]);
@@ -41,10 +42,18 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
         response = await axios.post(`${BASE_URL}/users`, formData);
         //setUsers([...users, response.data.user]);
       }
-      await fetchUsers();
-      handleCloseDialog();
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`User has been ${selectedUser ? 'updated' : 'created'} successfully.`, { autoClose: 700 });
+        await fetchUsers();
+        handleCloseDialog();
+
+      } else {
+        throw new Error('Invalid response from server');
+      }
     } catch (error) {
       console.error('Error:', error);
+      toast.error(error.response ? error.response.data.message : error.message);
     }
   };
 
@@ -76,12 +85,20 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`${BASE_URL}/users/${selectedUser}`);
-      setUsers(users.filter(user => user._id !== selectedUser));
-      setShowConfirmDialog(false); 
-      await fetchUsers();
+      const response = await axios.delete(`${BASE_URL}/users/${selectedUser}`);
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`User has been deleted successfully.`, { autoClose: 700 });
+        setUsers(users.filter(user => user._id !== selectedUser));
+        setShowConfirmDialog(false); 
+        await fetchUsers();
+
+      } else {
+        throw new Error('Invalid response from server');
+      }
     } catch (error) {
       console.error('Error deleting user:', error);
+      toast.error(error.response ? error.response.data.message : error.message);
     }
   };
 
@@ -91,10 +108,10 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
 
   return (
     <div>
-      <h1>User Management</h1>
-      <button className="btn btn-primary mb-3 mt-4" onClick={handleAddUser}>Add User</button>
+      <h4>User Management</h4>
+      <button className="btn btn-sm btn-success mb-3 mt-2" onClick={handleAddUser}><i className="fas fa-plus"></i> New User</button>
 
-      <table className="table table-sm">
+      <table className="table table-md">
         <thead>
           <tr>
             <th>User Name</th>
@@ -112,8 +129,8 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
               <td>{user.roles}</td>
               <td>{user.projects}</td>
               <td>
-                <button className="btn btn-sm btn-primary mr-2" onClick={() => handleEditUser(user)}><i className="fas fa-edit"></i> Edit</button>
-                <button className="btn btn-sm btn-danger" onClick={() => deleteUser(user.id)}><i className="fas fa-trash"></i> Delete</button>
+                <button className="btn btn-sm btn-warning mr-2" onClick={() => handleEditUser(user)}><i className="fas fa-edit"></i></button>
+                <button className="btn btn-sm btn-danger" onClick={() => deleteUser(user.id)}><i className="fas fa-trash"></i></button>
               </td>
             </tr>
           ))}
