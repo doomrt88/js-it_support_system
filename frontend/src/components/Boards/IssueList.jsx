@@ -3,35 +3,53 @@ import axios from '../../axios_interceptor';
 
 const IssueList = ({ userId, pageTitle }) => {
   const [issues, setIssues] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // API calls here
-  const fetchIssues = async () => {
+  const fetchIssues = async (page) => {
     try {
+      if (page < 1) return;
+
       let response;
       if (pageTitle === "All Issues") {
-        response = await axios.get(`/issues`);
+        response = await axios.get(`/issues?page=${page}`);
       } else if (pageTitle === "My Submitted Issues") {
-        response = await axios.get(`/my-submitted-issues/${userId}`);
+        response = await axios.get(`/my-submitted-issues/${userId}?page=${page}`);
       } else if (pageTitle === "My Open Issues") {
-        response = await axios.get(`/my-open-issues/${userId}`);
+        response = await axios.get(`/my-open-issues/${userId}?page=${page}`);
       } else if (pageTitle === "Closed Issues") {
-        response = await axios.get(`/closed-issues/${userId}`);
+        response = await axios.get(`/closed-issues/${userId}?page=${page}`);
+      } else if (pageTitle === "All Open Issues") {
+        response = await axios.get(`/open-issues?page=${page}`);
       }
-      else if (pageTitle === "All Open Issues") {
-        response = await axios.get(`/open-issues`);
+
+      console.log(response.data);
+      if (response.data) {
+        setIssues(response.data.issues);
+        setCurrentPage(response.data.currentPage);
+        setTotalPages(response.data.totalPages);
       }
-      
-      if(pageTitle)
-        setIssues(response.data);
-    
     } catch (error) {
       console.error('Error fetching issues:', error);
     }
   };
 
   useEffect(() => {
-    fetchIssues();
-  }, [userId, pageTitle]);
+    fetchIssues(currentPage);
+  }, [userId, pageTitle, currentPage]);
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   return (
     <div>
@@ -69,6 +87,23 @@ const IssueList = ({ userId, pageTitle }) => {
           ))}
         </tbody>
       </table>
+      <div className="d-flex justify-content-center">
+      <nav aria-label="...">
+        <ul className="pagination">
+          <li className={`page-item ${currentPage === 1 && 'disabled'}`}>
+            <button className="page-link" onClick={() => fetchIssues(currentPage - 1)}>Previous</button>
+          </li>
+          {[...Array(totalPages).keys()].map((page) => (
+            <li key={page + 1} className={`page-item ${currentPage === page + 1 && 'active'}`}>
+              <button className="page-link" onClick={() => fetchIssues(page + 1)}>{page + 1}</button>
+            </li>
+          ))}
+          <li className={`page-item ${currentPage === totalPages && 'disabled'}`}>
+            <button className="page-link" onClick={() => fetchIssues(currentPage + 1)}>Next</button>
+          </li>
+        </ul>
+      </nav>
+      </div>
     </div>
   );
 };
