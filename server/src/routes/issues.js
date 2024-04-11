@@ -28,105 +28,160 @@ app.get("/issues/:id", [validateToken], (request, response) => {
 });
 
 // Get all issues
-app.get("/issues", [validateToken], (_, response) => {
-  IssueModel
-  .find()
-  .populate('assigned_to')
-  .populate('project')
-  .then((issues) => {
-      return response.status(200).json(issues);
-    })
-    .catch((error) => {
-      return response.status(400).json({
-        error: "Error finding issues",
-        message: error,
-      });
+app.get("/issues", [validateToken], async (request, response) => {
+  const { page = 1, limit = 10 } = request.query;
+
+  try {
+    const currentPageNumber = parseInt(page, 10);
+    const issues = await IssueModel.find()
+      .populate('assigned_to')
+      .populate('project')
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await IssueModel.countDocuments();
+
+    return response.status(200).json({
+      issues,
+      totalPages: Math.ceil(count / limit),
+      currentPage: currentPageNumber
     });
+  } catch (error) {
+    return response.status(400).json({
+      error: "Error finding issues",
+      message: error,
+    });
+  }
 });
 
-app.get("/my-submitted-issues/:user_id", [validateToken], (request, response) => {
+app.get("/my-submitted-issues/:user_id", [validateToken], async (request, response) => {
   const userId = request.params.user_id;
+  const { page = 1, limit = 10 } = request.query;
+
   if (userId !== request.user.id) {
     return response.status(403).json({ error: "Unauthorized access" });
   }
 
-  IssueModel
-    .find({ created_by: userId })
-    .populate('assigned_to')
-    .populate('project')
-    .then((issues) => {
-      return response.status(200).json(issues);
-    })
-    .catch((error) => {
-      return response.status(400).json({
-        error: "Error finding submitted issues",
-        message: error,
-      });
+  try {
+    const currentPageNumber = parseInt(page, 10);
+    const issues = await IssueModel.find({ created_by: userId })
+      .populate('assigned_to')
+      .populate('project')
+      .limit(limit * 1)
+      .skip((currentPageNumber - 1) * limit)
+      .exec();
+
+    const count = await IssueModel.countDocuments({ created_by: userId });
+
+    return response.status(200).json({
+      issues,
+      totalPages: Math.ceil(count / limit),
+      currentPage: currentPageNumber
     });
+  } catch (error) {
+    return response.status(400).json({
+      error: "Error finding submitted issues",
+      message: error,
+    });
+  }
 });
 
 
-app.get("/my-open-issues/:user_id", [validateToken], (request, response) => {
+app.get("/my-open-issues/:user_id", [validateToken], async (request, response) => {
   const userId = request.params.user_id;
+  const { page = 1, limit = 10 } = request.query;
+
   if (userId !== request.user.id) {
     return response.status(403).json({ error: "Unauthorized access" });
   }
 
-  IssueModel
-    .find({ assigned_to: userId, status: { $in: ['New', 'In Progress'] } }) 
-    .populate('assigned_to')
-    .populate('project')
-    .then((issues) => {
-      return response.status(200).json(issues);
-    })
-    .catch((error) => {
-      return response.status(400).json({
-        error: "Error finding open issues",
-        message: error,
-      });
+  try {
+    const currentPageNumber = parseInt(page, 10);
+    const issues = await IssueModel.find({ assigned_to: userId, status: { $in: ['New', 'In Progress'] } })
+      .populate('assigned_to')
+      .populate('project')
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await IssueModel.countDocuments({ assigned_to: userId, status: { $in: ['New', 'In Progress'] } });
+
+    return response.status(200).json({
+      issues,
+      totalPages: Math.ceil(count / limit),
+      currentPage: currentPageNumber
     });
+  } catch (error) {
+    return response.status(400).json({
+      error: "Error finding open issues",
+      message: error,
+    });
+  }
 });
 
 
-
-app.get("/closed-issues/:user_id", [validateToken], (request, response) => {
+app.get("/closed-issues/:user_id", [validateToken], async (request, response) => {
   const userId = request.params.user_id;
+  const { page = 1, limit = 10 } = request.query;
+
   if (userId !== request.user.id) {
     return response.status(403).json({ error: "Unauthorized access" });
   }
 
-  IssueModel
-    .find({ assigned_to: userId, status: 'Closed' })
-    .populate('assigned_to')
-    .populate('project')
-    .then((issues) => {
-      return response.status(200).json(issues);
-    })
-    .catch((error) => {
-      return response.status(400).json({
-        error: "Error finding closed issues",
-        message: error,
-      });
+  try {
+    const currentPageNumber = parseInt(page, 10);
+    const issues = await IssueModel.find({ assigned_to: userId, status: 'Closed' })
+      .populate('assigned_to')
+      .populate('project')
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await IssueModel.countDocuments({ assigned_to: userId, status: 'Closed' });
+
+    return response.status(200).json({
+      issues,
+      totalPages: Math.ceil(count / limit),
+      currentPage: currentPageNumber
     });
+  } catch (error) {
+    return response.status(400).json({
+      error: "Error finding closed issues",
+      message: error,
+    });
+  }
 });
 
-app.get("/open-issues", [validateToken], (request, response) => {
-   IssueModel
-    .find({ status: { $in: ['New', 'In Progress']} })
-    .populate('assigned_to')
-    .populate({
-      path: 'project',
-      select: '_id name'
-    })
-    .then((issues) => {
-      return response.status(200).json(issues);
-    })
-    .catch((error) => {
-      return response.status(400).json({
-        error: "Error finding open issues",
-        message: error,
-      });
+// Get all open issues with pagination
+app.get("/open-issues", [validateToken], async (request, response) => {
+  const { page = 1, limit = 10 } = request.query;
+
+  try {
+    const currentPageNumber = parseInt(page, 10);
+    const issues = await IssueModel.find({ status: { $in: ['New', 'In Progress'] } })
+      .populate('assigned_to')
+      .populate({
+        path: 'project',
+        select: '_id name'
+      })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await IssueModel.countDocuments({ status: { $in: ['New', 'In Progress'] } });
+
+    return response.status(200).json({
+      issues,
+      totalPages: Math.ceil(count / limit),
+      currentPage: currentPageNumber
     });
+  } catch (error) {
+    return response.status(400).json({
+      error: "Error finding open issues",
+      message: error,
+    });
+  }
 });
 
 

@@ -45,6 +45,14 @@ app.get("/projects", [validateToken], (_, response) => {
 app.post("/projects", [validateToken], async (request, response) => {
   const newBody = { ...request.body };
 
+  const nameExists = await isProjectExists(newBody.name);
+  if (nameExists) {
+    return response.status(400).json({
+      error: "Name already exists",
+      message: "The project name is already in use",
+    });
+  }
+
   newBody.created_by = request.user.id,
   newBody.updated_by = request.user.id,
   newBody.created_at = new Date();
@@ -98,7 +106,7 @@ app.delete("/projects/:id", [validateToken], (request, response) => {
 });
 
 // Update
-app.put("/projects/:id", [validateToken], (request, response) => {
+app.put("/projects/:id", [validateToken], async (request, response) => {
   const { id } = request.params;
   const body = request.body;
   
@@ -107,6 +115,14 @@ app.put("/projects/:id", [validateToken], (request, response) => {
     return response.status(400).json({
       error: "bad request",
       message: "No ID or body provided",
+    });
+  }
+
+  const nameExists = await isProjectExists(body.name, id);
+  if (nameExists) {
+    return response.status(400).json({
+      error: "Name already exists",
+      message: "The project name is already in use",
     });
   }
 
@@ -134,5 +150,19 @@ app.put("/projects/:id", [validateToken], (request, response) => {
       });
     });
 });
+
+async function isProjectExists(name, id = null) {
+  try {
+    const query = { name: name };
+    if (id) {
+      query._id = { $ne: id };
+    }
+    const existingProject = await ProjectModel.findOne(query);
+    return !!existingProject;
+  } catch (error) {
+    console.error("Error checking name:", error.message);
+    return true;
+  }
+}
 
 export default app;

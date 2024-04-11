@@ -1,4 +1,6 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css'; 
 import './App.css'
 import Login from './components/Login/Login'
 import Home from './components/Home/Home'
@@ -10,22 +12,24 @@ import AccountProfile from './components/Account/AccountProfile'
 
 function App() {
 
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [email, setEmail] = useState('')
-  
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-  console.log(isLoggedIn);
-  
+  const [stayLoggedIn, setStayLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
+
+  const [token, setToken] = useState(
+    sessionStorage.getItem('token') || localStorage.getItem('token'),
+  );
+
   return (
     <div className="App">
       <BrowserRouter>
+        <ToastContainer />
         <Routes>
-          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+          <Route path="/login" element={<Login setStayLoggedIn={setStayLoggedIn} setEmail={setEmail} />} />
 
-          <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login" />}/>
-          <Route path="/boards" element={isLoggedIn ? <Boards /> : <Navigate to="/login" />}/>
-          <Route path="/administration" element={isLoggedIn ? <Administration /> : <Navigate to="/login" />}/>
-          <Route path="/account" element={isLoggedIn ? <AccountProfile /> : <Navigate to="/login" />}/>
+          <Route path="/" element={token ? <Home /> : <Navigate to="/login" />}/>
+          <Route path="/boards" element={token ? <Boards /> : <Navigate to="/login" />}/>
+          <Route path="/administration" element={token ? <Administration /> : <Navigate to="/login" />}/>
+          <Route path="/account" element={token ? <AccountProfile /> : <Navigate to="/login" />}/>
         </Routes>
       </BrowserRouter>
     </div>

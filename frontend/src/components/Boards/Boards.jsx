@@ -7,23 +7,42 @@ import ClosedIssues from './ClosedIssues';
 
 const Boards = () => {
   const [activeTab, setActiveTab] = useState('v-pills-myopenissues');
+  const [breadcrumbItems, setBreadcrumbItems] = useState(["My Open Issues"]);
 
-  const handleTabChange = (tabId) => {
+  const handleTabChange = (tabId, tabTitle) => {
     setActiveTab(tabId);
+    setBreadcrumbItems(prevItems => {
+      const updatedItems = [...prevItems];
+      updatedItems.pop();
+      updatedItems.push(tabTitle); 
+      return updatedItems;
+    });
   };
 
   return (
     <div className="container-fluid">
       <Navbar />
-      <div className="row mt-4"></div>
-      <hr />
+      <div className="row mt-2">
+        <div className="col-sm-12">
+          <nav aria-label="breadcrumb mb-0">
+            <ol className="breadcrumb">
+              <li className="breadcrumb-item"><i className="fas fa-home"></i></li>
+              <li className="breadcrumb-item">Boards</li>
+                {breadcrumbItems.map((item, index) => (
+                <li key={index} className="breadcrumb-item">{item}</li>
+              ))}
+            </ol>
+          </nav>
+        </div>
+      </div>
+      <hr></hr>
       <div className="row">
         <div className="col-sm-3">
           <div className="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            <a className={`nav-link ${activeTab === 'v-pills-myopenissues' ? 'active' : ''}`} id="v-pills-myopenissues-tab" onClick={() => handleTabChange('v-pills-myopenissues')} data-toggle="pill" href="#v-pills-myopenissues" role="tab" aria-controls="v-pills-myopenissues" aria-selected={activeTab === 'v-pills-myopenissues'}>My Open Issues</a>
-            <a className={`nav-link ${activeTab === 'v-pills-openissues' ? 'active' : ''}`} id="v-pills-openissues-tab" onClick={() => handleTabChange('v-pills-openissues')} data-toggle="pill" href="#v-pills-openissues" role="tab" aria-controls="v-pills-openissues" aria-selected={activeTab === 'v-pills-openissues'}>All Open Issues</a>
-            <a className={`nav-link ${activeTab === 'v-pills-mysubmittedissues' ? 'active' : ''}`} id="v-pills-mysubmittedissues-tab" onClick={() => handleTabChange('v-pills-mysubmittedissues')} data-toggle="pill" href="#v-pills-mysubmittedissues" role="tab" aria-controls="v-pills-mysubmittedissues" aria-selected={activeTab === 'v-pills-mysubmittedissues'}>My Submitted Issues</a>
-            <a className={`nav-link ${activeTab === 'v-pills-closedissues' ? 'active' : ''}`} id="v-pills-closedissues-tab" onClick={() => handleTabChange('v-pills-closedissues')} data-toggle="pill" href="#v-pills-closedissues" role="tab" aria-controls="v-pills-closedissues" aria-selected={activeTab === 'v-pills-closedissues'}>Closed Issues</a>
+            <a className={`nav-link ${activeTab === 'v-pills-myopenissues' ? 'active' : ''}`} id="v-pills-myopenissues-tab" onClick={() => handleTabChange('v-pills-myopenissues', 'My Open Issues')} data-toggle="pill" href="#v-pills-myopenissues" role="tab" aria-controls="v-pills-myopenissues" aria-selected={activeTab === 'v-pills-myopenissues'}>My Open Issues</a>
+            <a className={`nav-link ${activeTab === 'v-pills-openissues' ? 'active' : ''}`} id="v-pills-openissues-tab" onClick={() => handleTabChange('v-pills-openissues', 'All Open Issues')} data-toggle="pill" href="#v-pills-openissues" role="tab" aria-controls="v-pills-openissues" aria-selected={activeTab === 'v-pills-openissues'}>All Open Issues</a>
+            <a className={`nav-link ${activeTab === 'v-pills-mysubmittedissues' ? 'active' : ''}`} id="v-pills-mysubmittedissues-tab" onClick={() => handleTabChange('v-pills-mysubmittedissues', 'My Submitted Issues')} data-toggle="pill" href="#v-pills-mysubmittedissues" role="tab" aria-controls="v-pills-mysubmittedissues" aria-selected={activeTab === 'v-pills-mysubmittedissues'}>My Submitted Issues</a>
+            <a className={`nav-link ${activeTab === 'v-pills-closedissues' ? 'active' : ''}`} id="v-pills-closedissues-tab" onClick={() => handleTabChange('v-pills-closedissues', 'Closed Issues')} data-toggle="pill" href="#v-pills-closedissues" role="tab" aria-controls="v-pills-closedissues" aria-selected={activeTab === 'v-pills-closedissues'}>Closed Issues</a>
           </div>
         </div>
         <div className="col-sm-9">

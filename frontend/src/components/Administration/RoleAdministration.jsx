@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../../axios_interceptor'
 import RoleDialog from './Role/RoleDialog';
 import ConfirmDialog from '../Common/ConfirmDialog';
+import { toast } from 'react-toastify';
 
 const RoleAdministration = ({ onSubmit, onCancel }) => {
   const [roles, setRoles] = useState([]);
@@ -38,10 +39,20 @@ const RoleAdministration = ({ onSubmit, onCancel }) => {
         // Add new role
         response = await axios.post(`${BASE_URL}/roles`, formData);
       }
-      await fetchRoles();
-      handleCloseDialog();
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`Role has been ${selectedRole ? 'updated' : 'created'} successfully.`, { autoClose: 700 });
+        await fetchRoles();
+        handleCloseDialog();
+
+      } else {
+        throw new Error('Invalid response from server');
+      }
+
+      
     } catch (error) {
       console.error('Error:', error);
+      toast.error(error.response ? error.response.data.message : error.message);
     }
   };
 
@@ -72,12 +83,19 @@ const RoleAdministration = ({ onSubmit, onCancel }) => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`${BASE_URL}/roles/${selectedRole}`);
-      setRoles(roles.filter(role => role._id !== selectedRole));
-      setShowConfirmDialog(false); 
-      await fetchRoles();
+      const response = await axios.delete(`${BASE_URL}/roles/${selectedRole}`);
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`Role has been deleted successfully.`, { autoClose: 700 });
+        setRoles(roles.filter(role => role._id !== selectedRole));
+        setShowConfirmDialog(false); 
+        await fetchRoles();
+      } else {
+        throw new Error('Invalid response from server');
+      }
+      
     } catch (error) {
       console.error('Error deleting role:', error);
+      toast.error(error.response ? error.response.data.message : error.message);
     }
   };
 
@@ -87,10 +105,10 @@ const RoleAdministration = ({ onSubmit, onCancel }) => {
 
   return (
     <div>
-      <h1>Role Management</h1>
-      <button className="btn btn-primary mb-3 mt-4" onClick={handleAddRole}>Add Role</button>
+      <h4>Role Management</h4>
+      <button className="btn btn-sm btn-success mb-3 mt-2" onClick={handleAddRole}><i className="fas fa-plus"></i> New Role</button>
 
-      <table className="table table-sm">
+      <table className="table table-md">
         <thead>
           <tr>
             <th>Name</th>
@@ -104,8 +122,8 @@ const RoleAdministration = ({ onSubmit, onCancel }) => {
               <td>{role.name}</td>
               <td>{role.description}</td>
               <td>
-                <button className="btn btn-sm btn-primary mr-2" onClick={() => handleEditRole(role)}><i className="fas fa-edit"></i> Edit</button>
-                <button className="btn btn-sm btn-danger" onClick={() => deleteRole(role._id)}><i className="fas fa-trash"></i> Delete</button>
+                <button className="btn btn-sm btn-warning mr-2" onClick={() => handleEditRole(role)}><i className="fas fa-edit"></i> </button>
+                <button className="btn btn-sm btn-danger" onClick={() => deleteRole(role._id)}><i className="fas fa-trash"></i> </button>
               </td>
             </tr>
           ))}
