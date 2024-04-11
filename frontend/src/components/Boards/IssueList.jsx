@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../axios_interceptor';
+import EditIssueDialog from '../Issues/EditIssueDialog';
 
 const IssueList = ({ userId, pageTitle }) => {
   const [issues, setIssues] = useState([]);
+  const [modalInfo, setModalInfo] = useState(null);
+  const [selectedModalInfo, setSelectedModalInfo] = useState(null);
 
+  const [showDialog, setShowDialog] = useState(false);
+  const handleCloseDialog = () => setShowDialog(false);
+  const handleShowDialog = () => setShowDialog(true);
   // API calls here
   const fetchIssues = async () => {
     try {
@@ -33,6 +39,39 @@ const IssueList = ({ userId, pageTitle }) => {
     fetchIssues();
   }, [userId, pageTitle]);
 
+  const openEdit =  (row) => {
+      setModalInfo(row);
+      setSelectedModalInfo(row);
+      setShowDialog(handleShowDialog);
+  }
+/*
+  const handleEditIssue = async (issue) => {
+    setShowDialog(true);
+    try {
+      const response = await axios.get(`${BASE_URL}/issues/${issue._id}`);
+      console.log("Issue received  --  "+response.data);
+      setModalInfo(response.data); // Set userDetails first
+      setSelectedModalInfo(response.data); // Then set selectedUser
+    } catch (error) {
+      console.error('Error fetching issue details:', error);
+    }
+  };
+*/
+  const handleFormSubmit = async (formData) => {
+    try {
+      let response;
+      if(selectedModalInfo){
+        response = await axios.put(`${BASE_URL}/issues/${selectedModalInfo._id}`, formData);
+      }else{
+        response = await axios.post(`${BASE_URL}/issues`, formData);
+      }
+      await fetchIssues();
+      handleCloseDialog();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <div>
       <h1>{pageTitle}</h1>
@@ -61,10 +100,12 @@ const IssueList = ({ userId, pageTitle }) => {
               <td>P{issue.priority}</td>
               <td>{issue.status}</td>
               <td>{issue.assigned_to.first_name} {issue.assigned_to.last_name}</td>
+              <td><button className="btn btn-sm btn-secondary mr-2" onClick={()=> openEdit(issue)}>Edit</button></td>
             </tr>
           ))}
         </tbody>
       </table>
+      {showDialog&&(<EditIssueDialog onSubmit={handleFormSubmit} onCancel={handleCloseDialog} issueFormDetails={modalInfo}/>)}
     </div>
   );
 };
