@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../axios_interceptor';
 import EditIssueDialog from '../Issues/EditIssueDialog';
+import ConfirmDialog from '../Common/ConfirmDialog';
+import { toast } from 'react-toastify';
 
-const IssueList = ({ userId, pageTitle }) => {
+const IssueList = ({ userId, pageTitle, tabName }) => {
   const [issues, setIssues] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -12,6 +14,9 @@ const IssueList = ({ userId, pageTitle }) => {
   const [showDialog, setShowDialog] = useState(false);
   const handleCloseDialog = () => setShowDialog(false);
   const handleShowDialog = () => setShowDialog(true);
+  const [selectedIssueId, setSelectedIssueId] = useState(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
   // API calls here
   const fetchIssues = async (page) => {
     try {
@@ -90,6 +95,36 @@ const IssueList = ({ userId, pageTitle }) => {
     }
   };
 
+  const confirmUpdateIssueStatus = async (id) => {
+    setSelectedIssueId(id);
+    setShowConfirmDialog(true); 
+  };
+
+  const updateIssueStatus = async () => {
+    try {
+      const response = await axios.put(`${BASE_URL}/issues/${selectedIssueId}`, {
+        status: 'In Progress', 
+        start_date: new Date().toISOString()
+      });
+  
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`Issue has been started successfully.`, { autoClose: 700 });
+        setShowConfirmDialog(false); 
+        await fetchIssues(currentPage);
+      }else {
+        throw new Error('Invalid response from server');
+      }
+    } catch (error) {
+      console.error('Error updating issue status:', error);
+      toast.error(error.response ? error.response.data.message : error.message);
+    }
+  };
+
+  const cancelStart = () => {
+    setSelectedIssueId(null);
+    setShowConfirmDialog(false);
+  };
+  
   return (
     <div>
       <h4>{pageTitle}</h4>
@@ -106,7 +141,7 @@ const IssueList = ({ userId, pageTitle }) => {
             <th>Priority</th>
             <th>Status</th>
             <th>Assigned To</th>
-            <th>Actions</th>
+            <th className='actions'>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -126,8 +161,13 @@ const IssueList = ({ userId, pageTitle }) => {
               <td>{issue.status}</td>
               <td>{issue.assigned_to.first_name} {issue.assigned_to.last_name}</td>
               <td>
+                {tabName !== 'MySubmittedIssues' && issue.status === 'New' && (
+                  <button className="btn btn-sm btn-success mr-1" onClick={() => confirmUpdateIssueStatus(issue._id)} title="Start Issue">
+                    <i className="fas fa-play"></i>
+                  </button>
+                )}
                 {issue.status !== 'Closed' && (
-                  <button className="btn btn-sm btn-warning mr-2" onClick={() => openEdit(issue)}>
+                  <button className="btn btn-sm btn-warning mr-2" onClick={() => openEdit(issue)}  title="Edit Issue">
                     <i className="fas fa-edit"></i>
                   </button>
                 )}
@@ -154,6 +194,13 @@ const IssueList = ({ userId, pageTitle }) => {
       </nav>
       </div>
       {showDialog&&(<EditIssueDialog onSubmit={handleFormSubmit} onCancel={handleCloseDialog} issueFormDetails={modalInfo}/>)}
+      {showConfirmDialog && (
+        <ConfirmDialog
+          message="Are you sure you want to start working on this issue?"
+          onConfirm={updateIssueStatus}
+          onCancel={cancelStart}
+        />
+      )}
     </div>
   );
 };

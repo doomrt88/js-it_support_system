@@ -7,7 +7,7 @@ const MySubmittedIssues = ({ userId }) => {
   const pageTitle = "My Submitted Issues";
   return (
     <div>
-      {userId && <IssueList userId={userId}  pageTitle={pageTitle} />}
+      {userId && <IssueList userId={userId}  pageTitle={pageTitle} tabName="MySubmittedIssues" />}
     </div>
   );
 };

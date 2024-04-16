@@ -257,18 +257,20 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
             </Form.Group>
             
 
-            {/* <Form.Group className="mb-3 col-md-6">
-              <Form.Label>Start Date</Form.Label>
-              <Form.Control
-                type="date"
-                name="start_date"
-                value={formData.start_date}
-                onChange={handleChange}
-                required
-                autoComplete="off"
-              />
-              <Form.Control.Feedback type="invalid">Please provide a start date.</Form.Control.Feedback>
-            </Form.Group> */}
+            {['New', 'In Progress'].includes(formData.status) && (
+              <Form.Group className="mb-3 col-md-6">
+                <Form.Label>Start Date</Form.Label>
+                <Form.Control
+                  type="date"
+                  name="start_date"
+                  value={formData.start_date}
+                  onChange={handleChange}
+                  required
+                  autoComplete="off"
+                />
+                <Form.Control.Feedback type="invalid">Please provide a start date.</Form.Control.Feedback>
+              </Form.Group>
+            )}
             <Form.Group className="mb-3 col-md-6">
               <Form.Label>Due Date</Form.Label>
               <Form.Control

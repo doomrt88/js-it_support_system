@@ -37,7 +37,7 @@ const Boards = () => {
       </div>
       <hr></hr>
       <div className="row">
-        <div className="col-sm-3">
+        <div className="col-sm-2">
           <div className="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
             <a className={`nav-link ${activeTab === 'v-pills-myopenissues' ? 'active' : ''}`} id="v-pills-myopenissues-tab" onClick={() => handleTabChange('v-pills-myopenissues', 'My Open Issues')} data-toggle="pill" href="#v-pills-myopenissues" role="tab" aria-controls="v-pills-myopenissues" aria-selected={activeTab === 'v-pills-myopenissues'}>My Open Issues</a>
             <a className={`nav-link ${activeTab === 'v-pills-openissues' ? 'active' : ''}`} id="v-pills-openissues-tab" onClick={() => handleTabChange('v-pills-openissues', 'All Open Issues')} data-toggle="pill" href="#v-pills-openissues" role="tab" aria-controls="v-pills-openissues" aria-selected={activeTab === 'v-pills-openissues'}>All Open Issues</a>
@@ -45,7 +45,7 @@ const Boards = () => {
             <a className={`nav-link ${activeTab === 'v-pills-closedissues' ? 'active' : ''}`} id="v-pills-closedissues-tab" onClick={() => handleTabChange('v-pills-closedissues', 'Closed Issues')} data-toggle="pill" href="#v-pills-closedissues" role="tab" aria-controls="v-pills-closedissues" aria-selected={activeTab === 'v-pills-closedissues'}>Closed Issues</a>
           </div>
         </div>
-        <div className="col-sm-9">
+        <div className="col-sm-10">
           <div className="tab-content" id="v-pills-tabContent">
             <div className={`tab-pane fade ${activeTab === 'v-pills-myopenissues' ? 'show active' : ''}`} id="v-pills-myopenissues" role="tabpanel" aria-labelledby="v-pills-myopenissues-tab">
               <MyOpenIssues />

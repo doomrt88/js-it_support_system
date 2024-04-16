@@ -118,7 +118,7 @@ input[type='button'], input[type='submit'] {
 .btn-success {
   --bs-btn-color: #fff;
   --bs-btn-bg: #1ea79f;
-  --bs-btn-border-color: #198754;
+  --bs-btn-border-color: none;
   --bs-btn-hover-color: #fff;
   --bs-btn-hover-bg: #157347;
   --bs-btn-hover-border-color: #146c43;
@@ -135,7 +135,7 @@ input[type='button'], input[type='submit'] {
 .btn-warning {
   --bs-btn-color: #000;
   --bs-btn-bg: #ffefbe;
-  --bs-btn-border-color: #ffc107;
+  --bs-btn-border-color: none;
   --bs-btn-hover-color: #000;
   --bs-btn-hover-bg: #ffca2c;
   --bs-btn-hover-border-color: #ffc720;
@@ -152,7 +152,7 @@ input[type='button'], input[type='submit'] {
 .btn-danger {
   --bs-btn-color: #fff;
   --bs-btn-bg: #ff6978;
-  --bs-btn-border-color: #dc3545;
+  --bs-btn-border-color: none;
   --bs-btn-hover-color: #fff;
   --bs-btn-hover-bg: #bb2d3b;
   --bs-btn-hover-border-color: #b02a37;
@@ -168,4 +168,8 @@ input[type='button'], input[type='submit'] {
 
 .register-link{
   text-decoration: none;
+}
+
+.actions{
+  min-width: 100px;
 }
