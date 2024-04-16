@@ -189,6 +189,7 @@ app.get("/open-issues", [validateToken], async (request, response) => {
 app.post("/issues", [validateToken], async (request, response) => {
   const newBody = { ...request.body };
 
+  newBody.issue_number = generateIssueNumber();
   newBody.created_by = request.user.id,
   newBody.updated_by = request.user.id,
   newBody.created_at = new Date();
@@ -278,5 +279,11 @@ app.put("/issues/:id", [validateToken], (request, response) => {
       });
     });
 });
+
+function generateIssueNumber() {
+  const timestamp = Date.now(); 
+  return `${timestamp}`;
+}
+
 
 export default app;

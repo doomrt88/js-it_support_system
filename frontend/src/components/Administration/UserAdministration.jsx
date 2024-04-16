@@ -114,6 +114,7 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
       <table className="table table-md">
         <thead>
           <tr>
+            <th>#</th>
             <th>User Name</th>
             <th>Name</th>
             <th>Roles</th>
@@ -122,8 +123,9 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
           </tr>
         </thead>
         <tbody>
-          {users.map(user => (
+          {users.map((user, index) => (
             <tr key={user.id}>
+              <td>{index + 1}</td>
               <td>{user.user_name}</td>
               <td>{user.friendly_name}</td>
               <td>{user.roles}</td>

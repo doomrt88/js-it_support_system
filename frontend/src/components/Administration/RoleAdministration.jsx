@@ -111,14 +111,16 @@ const RoleAdministration = ({ onSubmit, onCancel }) => {
       <table className="table table-md">
         <thead>
           <tr>
+            <th>#</th>
             <th>Name</th>
             <th>Description</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {roles.map(role => (
+          {roles.map((role, index) => (
             <tr key={role._id}>
+              <td>{index + 1}</td>
               <td>{role.name}</td>
               <td>{role.description}</td>
               <td>

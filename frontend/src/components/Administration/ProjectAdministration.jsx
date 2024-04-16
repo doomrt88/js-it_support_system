@@ -112,6 +112,7 @@ const ProjectAdministration = ({ onSubmit, onCancel }) => {
       <table className="table table-md">
         <thead>
           <tr>
+            <th>#</th>
             <th>Name</th>
             <th>Description</th>
             <th>Start Date</th>
@@ -120,8 +121,9 @@ const ProjectAdministration = ({ onSubmit, onCancel }) => {
           </tr>
         </thead>
         <tbody>
-          {projects.map(project => (
+          {projects.map((project, index) => (
             <tr key={project._id}>
+              <td>{index + 1}</td>
               <td>{project.name}</td>
               <td>{project.description}</td>
               <td>{new Date(project.start_date).toLocaleDateString()}</td>
