@@ -102,3 +102,13 @@ db.createCollection("issues");
 
 // comments collection
 db.createCollection("comments");
+
+// 2024-04-17
+// update issue number
+db.issues.find({ issue_number: { $exists: false } }).forEach(function(issue) {
+    var created_at = issue.created_at;
+    var issue_number = Math.floor(created_at.getTime() / 1000);
+    db.issues.update({ _id: issue._id }, { $set: { issue_number: issue_number } });
+    print("Updated document with _id: " + issue._id + " to have issue_number: " + issue_number);
+});
+

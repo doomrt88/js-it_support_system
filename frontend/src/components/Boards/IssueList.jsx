@@ -97,6 +97,7 @@ const IssueList = ({ userId, pageTitle }) => {
       <table className="table table-md mt-4">
         <thead>
           <tr>
+            <th>Issue #</th>
             <th>Project</th>
             <th>Summary</th>
             <th>Description</th>
@@ -105,11 +106,13 @@ const IssueList = ({ userId, pageTitle }) => {
             <th>Priority</th>
             <th>Status</th>
             <th>Assigned To</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {issues.map(issue => (
             <tr key={issue._id}>
+              <td>{issue.issue_number}</td>
               <td>{issue.project?.name}</td>
               <td>{issue.title}</td>
               <td>{issue.description}</td>
@@ -122,7 +125,13 @@ const IssueList = ({ userId, pageTitle }) => {
               </td>
               <td>{issue.status}</td>
               <td>{issue.assigned_to.first_name} {issue.assigned_to.last_name}</td>
-              <td><button className="btn btn-sm btn-secondary mr-2" onClick={()=> openEdit(issue)}>Edit</button></td>
+              <td>
+                {issue.status !== 'Closed' && (
+                  <button className="btn btn-sm btn-warning mr-2" onClick={() => openEdit(issue)}>
+                    <i className="fas fa-edit"></i>
+                  </button>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

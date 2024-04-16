@@ -12,6 +12,7 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
 
     const [formData, setFormData] = useState({
       _id: issueFormDetails ? issueFormDetails._id : '',
+      issue_number: issueFormDetails ? issueFormDetails.issue_number : '',
       title: issueFormDetails ? issueFormDetails.title : '',
       description: issueFormDetails ? issueFormDetails.description : '',
       priority: issueFormDetails ? issueFormDetails.priority : '',
@@ -58,9 +59,10 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
 
   useEffect(() => {
       if (issueFormDetails) {
-        const { _id, title, description, priority, issue_type, start_date, due_date, status, assigned_to, project } = issueFormDetails;
+        const { _id, issue_number, title, description, priority, issue_type, start_date, due_date, status, assigned_to, project } = issueFormDetails;
         setFormData({
           _id: _id || '',
+          issue_number: issue_number || '',
           title: title || '',
           description: description || '',
           priority: priority || '',
@@ -116,12 +118,12 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
     };
     
     return(
-      <Modal show={true} onHide={handleClose}>
+      <Modal show={true} onHide={handleClose} backdrop="static" size='xl'>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Issue: {formData.title}</Modal.Title>
+          <Modal.Title>Edit Issue #<b><u>{formData.issue_number}</u></b></Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <ul>
+            {/* <ul>
             <li>{formData.description}</li>
             <li>{selectedProject.name}</li>
             <li>{formData.status}</li>
@@ -129,7 +131,7 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
             <li>{formData.start_date}</li>
             <li>{formData.due_date}</li>
             <li>{assignedUser.user_name}</li>
-            </ul>
+            </ul> */}
 
             <div className="container">
           <Form onSubmit={handleSubmit} className="row">
@@ -236,7 +238,7 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
                 <option value="New">New</option>
                 <option value="In Progress">In Progress</option>
                 <option value="For Review">For Review</option>
-                <option value="Done">Done</option>
+                <option value="Closed">Closed</option>
               </Form.Select>
               <Form.Control.Feedback type="invalid">Please provide a status.</Form.Control.Feedback>
             </Form.Group>
