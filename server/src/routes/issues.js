@@ -280,6 +280,75 @@ app.put("/issues/:id", [validateToken], (request, response) => {
     });
 });
 
+// for dashboard
+// Get total issues count
+app.get("/dashboard-total-issues", [validateToken], async (request, response) => {
+  try {
+    const count = await IssueModel.countDocuments();
+    return response.status(200).json({ total: count });
+  } catch (error) {
+    return response.status(400).json({
+      error: "Error counting issues",
+      message: error.message,
+    });
+  }
+});
+
+// Get open issues count
+app.get("/dashboard-open-issues", [validateToken], async (request, response) => {
+  try {
+    const count = await IssueModel.countDocuments({ status: { $in: ['New', 'In Progress'] } });
+    return response.status(200).json({ total: count });
+  } catch (error) {
+    return response.status(400).json({
+      error: "Error counting open issues",
+      message: error.message,
+    });
+  }
+});
+
+// Get closed issues count
+app.get("/dashboard-closed-issues", [validateToken], async (request, response) => {
+  try {
+    const count = await IssueModel.countDocuments({ status: 'Closed' });
+    return response.status(200).json({ total: count });
+  } catch (error) {
+    return response.status(400).json({
+      error: "Error counting closed issues",
+      message: error.message,
+    });
+  }
+});
+
+// Get closed issues count
+app.get("/dashboard-in-progress-issues", [validateToken], async (request, response) => {
+  try {
+    const count = await IssueModel.countDocuments({ status: 'In Progress' });
+    return response.status(200).json({ total: count });
+  } catch (error) {
+    return response.status(400).json({
+      error: "Error counting closed issues",
+      message: error.message,
+    });
+  }
+});
+
+app.get("/dashboard-priority", [validateToken], async (request, response) => {
+  try {
+
+    const priorityData = await IssueModel.aggregate([
+      { $group: { _id: "$priority", count: { $sum: 1 } } },
+    ]);
+    return response.status(200).json(priorityData);
+  } catch (error) {
+
+    return response.status(400).json({
+      error: "Error fetching priority chart data",
+      message: error.message,
+    });
+  }
+});
+
 function generateIssueNumber() {
   const timestamp = Date.now(); 
   return `${timestamp}`;

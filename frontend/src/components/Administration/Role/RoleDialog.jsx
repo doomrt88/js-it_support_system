@@ -96,8 +96,8 @@ const RoleDialog = ({ onSubmit, onCancel, roleFormDetails }) => {
                   <div className="row">
                     {permissions.map((group) => (
                       <div className="col-md-6" key={group.group_name}>
-                        <div class="row">
-                          <h6 class="pl-0 pr-0">{group.group_name}</h6>
+                        <div className="row">
+                          <h6 className="pl-0 pr-0">{group.group_name}</h6>
                           {group.permissions.map((permission) => (
                             <Form.Check
                               key={permission._id}

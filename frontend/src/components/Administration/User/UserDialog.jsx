@@ -143,8 +143,8 @@ const UserDialog = ({ onSubmit, onCancel, userFormDetails }) => {
               autoComplete="off"
             />
           </Form.Group>
-          <div class="row">
-            <div class="col-md-6">
+          <div className="row">
+            <div className="col-md-6">
             <Form.Group className="mb-3" controlId="formRoles">
               <Form.Label>Roles</Form.Label>
               <div>
@@ -162,7 +162,7 @@ const UserDialog = ({ onSubmit, onCancel, userFormDetails }) => {
               <Form.Control.Feedback type="invalid">Please select at least one role.</Form.Control.Feedback>
             </Form.Group>
             </div>
-            <div class="col-md-6">
+            <div className="col-md-6">
             <Form.Group className="mb-3" controlId="formProjects">
                 <Form.Label>Projects</Form.Label>
                 <div>

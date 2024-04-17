@@ -35,8 +35,7 @@ const IssueList = ({ userId, pageTitle, tabName }) => {
         response = await axios.get(`/open-issues?page=${page}`);
       }
 
-      console.log(response.data);
-      if (response.data) {
+      if (response?.data) {
         setIssues(response.data.issues);
         setCurrentPage(response.data.currentPage);
         setTotalPages(response.data.totalPages);
@@ -159,7 +158,7 @@ const IssueList = ({ userId, pageTitle, tabName }) => {
                 {issue.priority !== 1 && issue.priority !== 2 && <span className="badge badge-primary">P{issue.priority}</span>}
               </td>
               <td>{issue.status}</td>
-              <td>{issue.assigned_to.first_name} {issue.assigned_to.last_name}</td>
+              <td>{issue.assigned_to?.first_name} {issue.assigned_to?.last_name}</td>
               <td>
                 {tabName !== 'MySubmittedIssues' && issue.status === 'New' && (
                   <button className="btn btn-sm btn-success mr-1" onClick={() => confirmUpdateIssueStatus(issue._id)} title="Start Issue">
