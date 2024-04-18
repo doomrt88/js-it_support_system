@@ -93,7 +93,6 @@ app.get("/users", [validateToken], (request, response) => {
 // Create user
 app.post("/users", [validateToken], async (request, response) => {
   const body = request.body;
-  console.log(request);
   if (!body || !body.password) {
     // Bad request
     return response.status(400).json({
@@ -136,7 +135,6 @@ app.post("/users", [validateToken], async (request, response) => {
 // Create user
 app.post("/users/registration", async (request, response) => {
   const body = request.body;
-  console.log(request);
   if (!body || !body.password) {
     // Bad request
     return response.status(400).json({
@@ -287,13 +285,10 @@ app.get("/users/:id/permissions", [validateToken], async (request, response) => 
         // Fetch roles based on role names associated with the user
         const roles = await RoleModel.find({ name: { $in: user.roles } }).populate('permissions');
         
-        console.log(roles);
-
         const permissions = roles.reduce((acc, role) => {
           return acc.concat(role.permissions.map(permission => permission.code));
       }, []);
 
-        console.log(permissions);
         return response.status(200).json(permissions);
     } catch (error) {
         return response.status(400).json({

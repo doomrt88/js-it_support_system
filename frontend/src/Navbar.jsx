@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import AccountService from './account_service';
 import PermissionService from './permission_service';
 
-const Navbar = ({ userId, permissions }) => {
+const Navbar = ({ userId, permissions, userName }) => {
     const [showDialog, setShowDialog] = useState(false);
     const [issue, setIssue] = useState(null);
 
@@ -33,7 +33,6 @@ const Navbar = ({ userId, permissions }) => {
           handleCloseDialog();
   
           setTimeout(() => {
-            console.log('/boards');
             window.location.reload();
           }, 1000);
         } else {
@@ -82,6 +81,9 @@ const Navbar = ({ userId, permissions }) => {
           </ul>
         </div>
         <div className="navbar-nav ml-auto">
+          <li className="nav-item">
+              <Link className="nav-link">Welcome, {userName}</Link>
+          </li>
           <li className="nav-item dropdown">
             <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i className="fas fa-user"></i>

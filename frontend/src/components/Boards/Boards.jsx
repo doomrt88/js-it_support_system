@@ -50,8 +50,9 @@ const Boards = ({ userId, permissions }) => {
 }
 
   return (
-    <div className="container-fluid">
+    <div>
       <Navbar />
+      <div className='container-fluid '>
       <div className="row mt-2">
         <div className="col-sm-12">
           <nav aria-label="breadcrumb mb-0">
@@ -107,6 +108,7 @@ const Boards = ({ userId, permissions }) => {
             )}
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

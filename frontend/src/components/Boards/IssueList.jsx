@@ -125,10 +125,10 @@ const IssueList = ({ userId, pageTitle, tabName }) => {
   };
   
   return (
-    <div>
+    <div className=''>
       <h4>{pageTitle}</h4>
 
-      <table className="table table-md mt-4">
+      <table className="table table-md mt-4 table-auto">
         <thead>
           <tr>
             <th>Issue #</th>

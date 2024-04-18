@@ -3,8 +3,10 @@ import axios from '../../axios_interceptor'
 import UserDialog from './User/UserDialog';
 import ConfirmDialog from '../Common/ConfirmDialog';
 import { toast } from 'react-toastify';
+import AccountService from '../../account_service';
+import PermissionService from '../../permission_service';
 
-const UserAdministration = ({ onSubmit, onCancel }) => {
+const UserAdministration = ({ onSubmit, onCancel, permissions }) => {
   const [users, setUsers] = useState([]);
 
   const [showDialog, setShowDialog] = useState(false);
@@ -22,7 +24,6 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
     setShowDialog(true);
     try {
       const response = await axios.get(`${BASE_URL}/users/${user.id}`);
-      console.log(response.data);
       setUserDetails(response.data); // Set userDetails first
       setSelectedUser(response.data); // Then set selectedUser
     } catch (error) {
@@ -109,7 +110,9 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
   return (
     <div>
       <h4>User Management</h4>
-      <button className="btn btn-sm btn-success mb-3 mt-2" onClick={handleAddUser}><i className="fas fa-plus"></i> New User</button>
+      {permissions?.includes('write_users') && (
+        <button className="btn btn-sm btn-success mb-3 mt-2" onClick={handleAddUser}><i className="fas fa-plus"></i> New User</button>
+      )}
 
       <table className="table table-md">
         <thead>
@@ -131,8 +134,12 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
               <td>{user.roles}</td>
               <td>{user.projects}</td>
               <td>
-                <button className="btn btn-sm btn-warning mr-2" onClick={() => handleEditUser(user)}><i className="fas fa-edit"></i></button>
-                <button className="btn btn-sm btn-danger" onClick={() => deleteUser(user.id)}><i className="fas fa-trash"></i></button>
+                {permissions?.includes('write_users') && (
+                  <button className="btn btn-sm btn-warning mr-2" onClick={() => handleEditUser(user)}><i className="fas fa-edit"></i></button>
+                )}
+                {permissions?.includes('delete_users') && (
+                  <button className="btn btn-sm btn-danger" onClick={() => deleteUser(user.id)}><i className="fas fa-trash"></i></button>
+                )}
               </td>
             </tr>
           ))}
@@ -154,4 +161,4 @@ const UserAdministration = ({ onSubmit, onCancel }) => {
   );
 };
 
-export default UserAdministration;
+export default AccountService(PermissionService(UserAdministration));

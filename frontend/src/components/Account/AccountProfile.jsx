@@ -24,7 +24,6 @@ const AccountProfile = ({ userId }) => {
   const fetchUser = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/users/${userId}`);
-      console.log(response.data);
       setUserData(response.data);
     } catch (error) {
       console.error('Error fetching user:', error);
