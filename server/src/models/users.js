@@ -15,16 +15,14 @@ const UserSchema = new Schema({
   },
   last_name: String,
   created_by: {
-    type: String,
-    required: true
+    type: String
   },
   created_at: {
     type: Date,
     default: Date.now
   },
   updated_by: {
-    type: String,
-    required: true
+    type: String
   },
   updated_at: {
     type: Date,

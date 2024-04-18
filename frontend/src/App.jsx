@@ -9,6 +9,7 @@ import Boards from './components/Boards/Boards'
 import Administration from './components/Administration/Administration'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AccountProfile from './components/Account/AccountProfile'
+import UserRegistrationForm from './components/Login/Registration';
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
         <ToastContainer />
         <Routes>
           <Route path="/login" element={<Login setStayLoggedIn={setStayLoggedIn} setEmail={setEmail} />} />
+          <Route path="/register" element={<UserRegistrationForm />} />
 
           <Route path="/" element={token ? <Home /> : <Navigate to="/login" />}/>
           <Route path="/boards" element={token ? <Boards /> : <Navigate to="/login" />}/>

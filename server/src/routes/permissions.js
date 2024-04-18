@@ -50,8 +50,6 @@ router.get("/permissions", validateToken, (_, res) => {
     }
   ])
     .then((groups) => {
-      console.log('permissionssssss');
-      console.log(groups);
       return res.status(200).json(groups);
     })
     .catch((error) => {
