@@ -5,7 +5,7 @@ import { validateToken } from "../middlewares/auth.js";
 const app = express();
 
 // Create comment
-router.post("/comment", validateToken, async (req, res) => {
+app.post("/comment", validateToken, async (req, res) => {
     const newComment = { ...req.body };
     newComment.created_at = new Date();
     newComment.created_by = req.user.id;
@@ -19,16 +19,18 @@ router.post("/comment", validateToken, async (req, res) => {
       });
   });
 
-router.get("/comment/:issue", [validateToken], async (req, res) => {
-    const{issueId} = req.params;
-    if(!issueId){
+app.get("/comment/:issueid", [validateToken], async (req, res) => {
+    const{issueid} = req.params;
+    if(!issueid){
         return res.status(400).json({
             error: "bad request",
             message: "issue number not provided"
         });
     }
     try{
-        const comments = await CommentModel.find({ issue_number: issueId}).exec();
+        const comments = await CommentModel.find({ issue_number: issueid})
+            .populate('created_by')
+            .exec();
         return res.status(200).json(comments);
     } catch(error){
         return response.status(400).json({
@@ -37,3 +39,5 @@ router.get("/comment/:issue", [validateToken], async (req, res) => {
           });
     }
 });
+
+export default app;

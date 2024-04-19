@@ -15,7 +15,8 @@ const CommentSchema = new Schema({
     default: Date.now
   },
   created_by: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'users',
     required: true
   }
 });

@@ -9,7 +9,8 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedProject, setSelectedProject] = useState(issueFormDetails? issueFormDetails.project : null);
     const [assignedUser, setAssignedUser] = useState(issueFormDetails? issueFormDetails.assigned_to : null);
-
+    const [comment, setComment] = useState('');
+    const [commentList, setCommentList] = useState([]);
     const [formData, setFormData] = useState({
       _id: issueFormDetails ? issueFormDetails._id : '',
       issue_number: issueFormDetails ? issueFormDetails.issue_number : '',
@@ -23,7 +24,6 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
       assigned_to: issueFormDetails ? issueFormDetails.assigned_to._id : '',
       project: issueFormDetails ? issueFormDetails.project._id : ''
     });
-    console.log(formData._id);
     
   useEffect(() => {
     const fetchProjects = async () => {
@@ -39,6 +39,7 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
       }
     };
 
+
     const fetchUsers = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/users?search=${searchTerm}`);
@@ -52,7 +53,7 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
     if (searchTerm) {
       fetchUsers();
     }
-
+    getComments();
 
 
   }, []);
@@ -107,6 +108,33 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
         [e.target.name]: e.target.value
       });
     };
+
+    const handleCommentChange = (e) => {
+        setComment(e.target.value);
+    }
+
+    const getComments = async () => {
+      try{
+        const response = await axios.get(`${BASE_URL}/comment/${formData.issue_number}`);
+        setCommentList(response.data);
+      }catch(error){
+        console.error('Error:',error);
+      }
+    }
+
+    const saveComment = async () => {
+      try{
+        if(comment.trim() !== ""){
+          const response = await axios.post(`${BASE_URL}/comment`, {
+            value: comment,
+            issue_number: formData.issue_number
+          });
+          getComments();
+        }
+      }catch(error){
+        console.error('Error:', error);
+      }
+    }
     
     const handleSubmit = (e) => {
       e.preventDefault();
@@ -123,16 +151,6 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
           <Modal.Title>Edit Issue #<b><u>{formData.issue_number}</u></b></Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            {/* <ul>
-            <li>{formData.description}</li>
-            <li>{selectedProject.name}</li>
-            <li>{formData.status}</li>
-            <li>P{formData.priority}</li>
-            <li>{formData.start_date}</li>
-            <li>{formData.due_date}</li>
-            <li>{assignedUser.user_name}</li>
-            </ul> */}
-
             <div className="container">
           <Form onSubmit={handleSubmit} className="row">
             <Form.Group className="mb-3 col-md-6">
@@ -282,6 +300,34 @@ const EditIssueDialog = ({ onSubmit, onCancel, issueFormDetails }) => {
                 autoComplete="off"
               />
               <Form.Control.Feedback type="invalid">Please provide a due date.</Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3 col-md-12">
+              <Form.Label>Comments</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={2}
+                name="comment"
+                value={comment}
+                onChange={handleCommentChange}
+                autoComplete="off"
+              />
+              <Button className="btn-comment" disabled={!comment} variant="secondary" onClick={saveComment} size="sm">Save Comment</Button>
+              {commentList && (
+                <div class="w-100">
+                {commentList.map(cmt => 
+                  <div className="comment-block">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="d-flex flex-row align-items-center">
+                        <span class="mr-2">{cmt.created_by.first_name} {cmt.created_by.last_name}</span>
+                      </div>
+                      <small>{cmt.created_at}</small>
+                  </div>
+                  <p class="text-justify comment-text mb-0">{cmt.value}</p>
+
+                  </div>
+                )}
+                </div> 
+              )}
             </Form.Group>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleClose} size="md">

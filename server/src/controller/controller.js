@@ -5,7 +5,8 @@ import users from "../routes/users.js";
 import roles from "../routes/roles.js";
 import projects from '../routes/projects.js';
 import permissions from '../routes/permissions.js';
-import issues from '../routes/issues.js'
+import issues from '../routes/issues.js';
+import comment from '../routes/comments.js';
 
 const app = express();
 
@@ -16,5 +17,6 @@ app.use(roles);
 app.use(projects);
 app.use(permissions);
 app.use(issues);
+app.use(comment);
 
 export default app;
