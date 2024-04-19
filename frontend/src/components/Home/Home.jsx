@@ -88,7 +88,7 @@ const Home = () => {
   };
 
   return (
-    <div className="container-fluid">
+    <div>
       <Navbar />
       <div className="container mt-4 text-center">
         <h1>Dashboard</h1>

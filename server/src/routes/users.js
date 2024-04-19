@@ -1,5 +1,6 @@
 import express from "express";
 import UserModel from "../models/users.js";
+import RoleModel from "../models/roles.js";
 import { generatePassword } from "../utils/index.js";
 import { validateToken } from "../middlewares/auth.js";
 
@@ -92,7 +93,6 @@ app.get("/users", [validateToken], (request, response) => {
 // Create user
 app.post("/users", [validateToken], async (request, response) => {
   const body = request.body;
-  console.log(request);
   if (!body || !body.password) {
     // Bad request
     return response.status(400).json({
@@ -131,6 +131,56 @@ app.post("/users", [validateToken], async (request, response) => {
       });
     });
 });
+
+// Create user
+app.post("/users/registration", async (request, response) => {
+  const body = request.body;
+  if (!body || !body.password) {
+    // Bad request
+    return response.status(400).json({
+      error: "bad request",
+      message: "No body provided",
+    });
+  }
+
+  const usernameTaken = await isUsernameTaken(body.user_name);
+  if (usernameTaken) {
+    return response.status(400).json({
+      error: "Username already exists",
+      message: "The username is already in use",
+    });
+  }
+  
+  if(body.password !== body.confirmPassword){
+    return response.status(400).json({
+      error: "Passwords don't match",
+      message: "Passwords don't match",
+    });
+  }
+
+  const password = await generatePassword(body.password);
+  const newBody = { ...body, password };
+
+  newBody.created_at = new Date();
+  newBody.updated_at = new Date();
+  newBody.roles = [];
+  newBody.roles.push('Basic Role');
+
+  UserModel.create(newBody)
+    .then((user) => {
+      return response.status(201).json({
+        message: "User created",
+        user: user,
+      });
+    })
+    .catch((error) => {
+      return response.status(400).json({
+        error: "Database error",
+        message: error,
+      });
+    });
+});
+
 
 // Delete
 app.delete("/users/:id", [validateToken], (request, response) => {
@@ -211,6 +261,44 @@ app.put("/users/:id", [validateToken], async (request, response) => {
       });
     });
 });
+
+// Get user permissions by user id
+app.get("/users/:id/permissions", [validateToken], async (request, response) => {
+  const { id } = request.params;
+    if (!id) {
+        // Bad request
+        return response.status(400).json({
+            error: "bad request",
+            message: "No ID provided",
+        });
+    }
+
+    try {
+        const user = await UserModel.findById(id);
+        if (!user) {
+            return response.status(404).json({
+                error: "User not found",
+                message: "User with the provided ID does not exist",
+            });
+        }
+
+        // Fetch roles based on role names associated with the user
+        const roles = await RoleModel.find({ name: { $in: user.roles } }).populate('permissions');
+        
+        const permissions = roles.reduce((acc, role) => {
+          return acc.concat(role.permissions.map(permission => permission.code));
+      }, []);
+
+        return response.status(200).json(permissions);
+    } catch (error) {
+        return response.status(400).json({
+            error: "Error finding user permissions",
+            message: error.message,
+        });
+    }
+});
+
+
 
 function mapToViewModel(users) {
   return users.map(user => ({

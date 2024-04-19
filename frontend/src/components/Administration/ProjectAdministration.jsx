@@ -3,8 +3,10 @@ import axios from '../../axios_interceptor'
 import ProjectDialog from './Project/ProjectDialog';
 import ConfirmDialog from '../Common/ConfirmDialog';
 import { toast } from 'react-toastify';
+import AccountService from '../../account_service';
+import PermissionService from '../../permission_service';
 
-const ProjectAdministration = ({ onSubmit, onCancel }) => {
+const ProjectAdministration = ({ onSubmit, onCancel, permissions }) => {
   const [projects, setProjects] = useState([]);
 
   const [showDialog, setShowDialog] = useState(false);
@@ -107,7 +109,9 @@ const ProjectAdministration = ({ onSubmit, onCancel }) => {
   return (
     <div>
       <h4>Project Management</h4>
-      <button className="btn btn-sm btn-success mb-3 mt-2" onClick={handleAddProject}><i className="fas fa-plus"></i> New Project</button>
+      {permissions?.includes('write_projects') && (
+        <button className="btn btn-sm btn-success mb-3 mt-2" onClick={handleAddProject}><i className="fas fa-plus"></i> New Project</button>
+      )}
 
       <table className="table table-md">
         <thead>
@@ -129,8 +133,12 @@ const ProjectAdministration = ({ onSubmit, onCancel }) => {
               <td>{new Date(project.start_date).toLocaleDateString()}</td>
               <td>{new Date(project.end_date).toLocaleDateString()}</td>
               <td>
+              {permissions?.includes('write_projects') && (
                 <button className="btn btn-sm btn-warning mr-2" onClick={() => handleEditProject(project)}><i className="fas fa-edit"></i></button>
+              )}
+              {permissions?.includes('delete_projects') && (
                 <button className="btn btn-sm btn-danger" onClick={() => deleteProject(project._id)}><i className="fas fa-trash"></i></button>
+              )}
               </td>
             </tr>
           ))}
@@ -152,4 +160,4 @@ const ProjectAdministration = ({ onSubmit, onCancel }) => {
   );
 };
 
-export default ProjectAdministration;
+export default AccountService(PermissionService(ProjectAdministration));

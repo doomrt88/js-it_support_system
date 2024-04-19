@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import CreateIssueDialog from './components/Issues/CreateIssueDialog';
 import { toast } from 'react-toastify';
+import AccountService from './account_service';
+import PermissionService from './permission_service';
 
-const Navbar = () => {
+const Navbar = ({ userId, permissions, userName }) => {
     const [showDialog, setShowDialog] = useState(false);
     const [issue, setIssue] = useState(null);
 
@@ -30,6 +32,9 @@ const Navbar = () => {
           toast.success(`Issue has been created successfully.`, { autoClose: 700 });
           handleCloseDialog();
   
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         } else {
           throw new Error('Invalid response from server');
         }
@@ -58,18 +63,27 @@ const Navbar = () => {
         </button>
         <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <Link className="nav-link" to="/boards">Boards</Link>
-            </li>
-            <li className="nav-item">
-              <Button variant="outline-primary" onClick={handleCreateIssue}>Create</Button>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/administration">Administration</Link>
-            </li>
+            {permissions?.includes('read_issues') && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/boards">Boards</Link>
+              </li>
+             )}
+            {permissions?.includes('write_issues') && (
+                <li className="nav-item">
+                    <Button variant="outline-primary" onClick={handleCreateIssue}>Create</Button>
+                </li>
+             )}
+             {permissions?.includes('read_nav_bar') && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/administration">Administration</Link>
+              </li>
+             )}
           </ul>
         </div>
         <div className="navbar-nav ml-auto">
+          <li className="nav-item">
+              <Link className="nav-link">Welcome, {userName}</Link>
+          </li>
           <li className="nav-item dropdown">
             <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i className="fas fa-user"></i>
@@ -90,4 +104,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default AccountService(PermissionService(Navbar));

@@ -63,7 +63,7 @@ db.users.updateOne({ "user_name": "admin" }, { $set: { "roles": ["admin"] } });
 db.createCollection("permissions");
 db.permissions.createIndex({ "code": 1 }, { unique: true });
 db.permissions.insertMany([
-    { code: "read_nav_bar", name: "Read Nav Bar" },
+    { code: "read_nav_bar", name: "Read Administration" },
     { code: "read_create_issue_menu", name: "Read Create Issue Menu" },
     { code: "read_profile_menu", name: "Read Profile Menu" },
     { code: "read_logout", name: "Read Logout" },
@@ -112,3 +112,25 @@ db.issues.find({ issue_number: { $exists: false } }).forEach(function(issue) {
     print("Updated document with _id: " + issue._id + " to have issue_number: " + issue_number);
 });
 
+// 2024-04-18
+db.permissions.insertOne({
+    code: "read_closed_issues",
+    name: "Read Closed Issues",
+    group_name: "Boards"
+});
+
+// 2024-04-19
+// execute this in the mongosh to assign a role to all permissions
+const role = db.roles.findOne({ name: "admin" }); // Replace admin with the role you want
+
+if (!role) {
+  print("Role not found");
+} else {
+  const permissions = db.permissions.find().toArray();
+  db.roles.updateOne(
+    { _id: role._id },
+    { $set: { permissions: permissions.map(p => p._id) } }
+  );
+
+  print(`Role with name ${role.name} has been assigned to all permissions.`);
+}

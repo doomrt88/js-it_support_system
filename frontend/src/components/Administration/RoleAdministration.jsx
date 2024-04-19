@@ -3,8 +3,10 @@ import axios from '../../axios_interceptor'
 import RoleDialog from './Role/RoleDialog';
 import ConfirmDialog from '../Common/ConfirmDialog';
 import { toast } from 'react-toastify';
+import AccountService from '../../account_service';
+import PermissionService from '../../permission_service';
 
-const RoleAdministration = ({ onSubmit, onCancel }) => {
+const RoleAdministration = ({ onSubmit, onCancel, permissions }) => {
   const [roles, setRoles] = useState([]);
 
   const [showDialog, setShowDialog] = useState(false);
@@ -106,7 +108,10 @@ const RoleAdministration = ({ onSubmit, onCancel }) => {
   return (
     <div>
       <h4>Role Management</h4>
-      <button className="btn btn-sm btn-success mb-3 mt-2" onClick={handleAddRole}><i className="fas fa-plus"></i> New Role</button>
+      {permissions?.includes('write_roles') && (
+        <button className="btn btn-sm btn-success mb-3 mt-2" onClick={handleAddRole}><i className="fas fa-plus"></i> New Role</button>
+      )}
+      
 
       <table className="table table-md">
         <thead>
@@ -124,8 +129,12 @@ const RoleAdministration = ({ onSubmit, onCancel }) => {
               <td>{role.name}</td>
               <td>{role.description}</td>
               <td>
+              {permissions?.includes('write_roles') && (
                 <button className="btn btn-sm btn-warning mr-2" onClick={() => handleEditRole(role)}><i className="fas fa-edit"></i> </button>
+              )}
+              {permissions?.includes('delete_roles') && (
                 <button className="btn btn-sm btn-danger" onClick={() => deleteRole(role._id)}><i className="fas fa-trash"></i> </button>
+              )}
               </td>
             </tr>
           ))}
@@ -147,4 +156,4 @@ const RoleAdministration = ({ onSubmit, onCancel }) => {
   );
 };
 
-export default RoleAdministration;
+export default AccountService(PermissionService(RoleAdministration));

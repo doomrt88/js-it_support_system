@@ -1,15 +1,18 @@
 import React from 'react';
 import IssueList from './IssueList';
 import AccountService from '../../account_service';
+import PermissionService from '../../permission_service';
 
 
-const AllOpenIssues = ({ userId }) => {
+const AllOpenIssues = ({ userId, permissions }) => {
   const pageTitle = "All Open Issues";
   return (
     <div>
-      {userId && <IssueList userId={userId}  pageTitle={pageTitle} />}
+      {permissions?.includes('read_all_open_issues') && userId && (
+        <IssueList userId={userId}  pageTitle={pageTitle} />
+        )}
     </div>
   );
 };
 
-export default AccountService(AllOpenIssues);
+export default AccountService(PermissionService(AllOpenIssues));
